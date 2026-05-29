@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import {
   getOwnerByToken, getYachtsByOwner, getBookingsForOwner,
@@ -12,10 +12,11 @@ import CaptainBookingCard from '@/components/CaptainBookingCard';
 import BookingCalendar from '@/components/BookingCalendar';
 import BlockSlotForm from '@/components/BlockSlotForm';
 
-interface Props { params: { token: string } }
+interface Props { params: Promise<{ token: string }> }
 
 export default function CaptainPage({ params }: Props) {
-  const owner = getOwnerByToken(params.token);
+  const { token } = use(params);
+  const owner = getOwnerByToken(token);
 
   if (!owner) {
     return (

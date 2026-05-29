@@ -25,7 +25,7 @@ export default function YachtPage({ params }: Props) {
   const handleMonthChange = (y: number, m: number) => {
     setYear(y);
     setMonth(m);
-    setBookings(getBookingsForMonth(params.id, y, m));
+    setBookings(getBookingsForMonth(id, y, m));
   };
 
   const handleNewBooking = (data: BookingData) => {
@@ -42,16 +42,15 @@ export default function YachtPage({ params }: Props) {
         ((parseInt(data.timeEnd) - parseInt(data.timeStart)) * yacht.pricePerHour)
       ),
     });
-    // Refresh if new booking is in viewed month
     const bMonth = parseInt(data.date.split('-')[1]);
     const bYear = parseInt(data.date.split('-')[0]);
     if (bYear === year && bMonth === month) {
-      setBookings(getBookingsForMonth(params.id, year, month));
+      setBookings(getBookingsForMonth(id, year, month));
     }
     return booking;
   };
 
-  const allBookings = getBookingsForMonth(params.id, year, month);
+  const allBookings = getBookingsForMonth(id, year, month);
 
   return (
     <div className="min-h-screen">
