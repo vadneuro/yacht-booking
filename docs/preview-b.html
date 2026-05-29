@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview B — Yacht Club Dark</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Barlow', sans-serif; background: oklch(96% 0.006 220); color: oklch(18% 0.02 240); }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 3rem;
+  background: oklch(11% 0.02 242);
+}
+.logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900; font-size: 1.15rem; letter-spacing: .04em;
+  text-transform: uppercase; color: oklch(97% 0.004 220);
+}
+.logo em { font-style: normal; color: oklch(76% 0.14 75); }
+.nav-phone { font-size: .85rem; color: oklch(70% 0.02 240); }
+.nav-cta {
+  padding: .55rem 1.4rem;
+  background: oklch(76% 0.14 75);
+  color: oklch(14% 0.02 240); border: none; border-radius: 6px;
+  font-family: 'Barlow', sans-serif; font-size: .875rem; font-weight: 600;
+  cursor: pointer; transition: background 180ms ease-out, transform 160ms ease-out;
+}
+.nav-cta:hover { background: oklch(70% 0.14 75); }
+.nav-cta:active { transform: scale(0.97); }
+
+/* ─── HERO ─── */
+.hero {
+  height: 100svh; min-height: 620px;
+  position: relative; display: flex;
+  align-items: flex-end; padding-bottom: 7rem;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1800&q=85') center 40%/cover no-repeat;
+}
+.hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to right,
+    oklch(11% 0.024 242 / 0.92) 0%,
+    oklch(11% 0.024 242 / 0.72) 55%,
+    oklch(11% 0.024 242 / 0.18) 100%
+  );
+}
+.hero-content {
+  position: relative; z-index: 2;
+  padding-left: 3rem; max-width: 700px;
+  opacity: 0; transform: translateX(-32px);
+  animation: heroIn 900ms cubic-bezier(0.23, 1, 0.32, 1) 150ms forwards;
+}
+@keyframes heroIn {
+  to { opacity: 1; transform: translateX(0); }
+}
+.hero-tag {
+  display: inline-block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: .75rem; letter-spacing: .16em; text-transform: uppercase;
+  color: oklch(76% 0.14 75);
+  margin-bottom: 1.2rem;
+}
+.hero-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(3.5rem, 8vw, 8rem);
+  line-height: .92; letter-spacing: -.01em; text-transform: uppercase;
+  color: oklch(97% 0.004 220);
+  margin-bottom: 1.5rem;
+}
+.hero-title em { font-style: normal; color: oklch(76% 0.14 75); display: block; }
+.hero-sub {
+  font-size: 1.05rem; line-height: 1.65;
+  color: oklch(80% 0.01 240); margin-bottom: 2rem; max-width: 42ch;
+}
+.hero-actions { display: flex; gap: .875rem; flex-wrap: wrap; }
+.btn-gold {
+  padding: .9rem 2.2rem;
+  background: oklch(76% 0.14 75);
+  color: oklch(12% 0.02 240); border: none; border-radius: 6px;
+  font-family: 'Barlow', sans-serif; font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: background 180ms ease-out, transform 160ms ease-out;
+}
+.btn-gold:hover { background: oklch(70% 0.14 75); }
+.btn-gold:active { transform: scale(0.97); }
+.btn-outline {
+  padding: .9rem 2.2rem;
+  background: transparent;
+  color: oklch(97% 0.004 220); border: 1.5px solid oklch(97% 0.004 220 / 0.4);
+  border-radius: 6px;
+  font-family: 'Barlow', sans-serif; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: border-color 180ms ease-out, background 180ms ease-out, transform 160ms ease-out;
+}
+.btn-outline:hover { border-color: oklch(97% 0.004 220 / 0.8); background: oklch(97% 0.004 220 / 0.08); }
+.btn-outline:active { transform: scale(0.97); }
+
+/* ─── STATS BAR ─── */
+.stats-bar {
+  background: oklch(11% 0.02 242);
+  display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
+}
+.stat {
+  padding: 1.8rem 3.5rem;
+  border-right: 1px solid oklch(97% 0.004 220 / 0.08);
+  text-align: center;
+}
+.stat:last-child { border-right: none; }
+.stat-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.2rem; font-weight: 900; letter-spacing: -.02em;
+  color: oklch(76% 0.14 75);
+}
+.stat-lbl { font-size: .78rem; color: oklch(55% 0.015 240); letter-spacing: .06em; text-transform: uppercase; margin-top: .25rem; }
+
+/* ─── FLEET ─── */
+.fleet { padding: 5.5rem 3rem; }
+.fleet-head { max-width: 1200px; margin: 0 auto 3rem; display: flex; align-items: baseline; justify-content: space-between; }
+.fleet-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900; font-size: clamp(2.5rem, 5vw, 4.5rem);
+  letter-spacing: -.01em; text-transform: uppercase;
+}
+.fleet-sub { font-size: .875rem; color: oklch(52% 0.02 240); }
+
+.fleet-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: auto auto;
+  gap: 1.25rem;
+}
+.yacht-card {
+  position: relative; border-radius: 12px; overflow: hidden;
+  cursor: pointer;
+  transition: transform 280ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.yacht-card:hover { transform: translateY(-4px); }
+.yacht-card:active { transform: scale(0.98); }
+.yacht-card.featured { grid-row: span 2; }
+.yacht-img {
+  width: 100%; height: 100%; min-height: 220px;
+  object-fit: cover;
+  transition: transform 700ms cubic-bezier(0.23, 1, 0.32, 1);
+  display: block;
+}
+.yacht-card.featured .yacht-img { min-height: 460px; }
+.yacht-card:hover .yacht-img { transform: scale(1.05); }
+.yacht-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, oklch(10% 0.02 240 / 0.9) 0%, transparent 55%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 1.5rem;
+}
+.yacht-type-tag {
+  font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: oklch(76% 0.14 75); margin-bottom: .4rem;
+}
+.yacht-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900; font-size: 1.6rem; letter-spacing: -.01em; text-transform: uppercase;
+  color: oklch(97% 0.004 220);
+}
+.yacht-card.featured .yacht-name { font-size: 2.4rem; }
+.yacht-price {
+  font-size: .9rem; color: oklch(80% 0.01 240); margin-top: .3rem;
+}
+.yacht-card.featured .yacht-price { font-size: 1rem; }
+
+/* ─── SCROLL REVEALS ─── */
+.reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 600ms cubic-bezier(0.23, 1, 0.32, 1),
+              transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+  .fleet-grid { grid-template-columns: 1fr 1fr; }
+  .yacht-card.featured { grid-row: span 1; }
+  .hero-content { padding-left: 1.5rem; }
+  nav { padding: 1.1rem 1.5rem; }
+  .fleet { padding: 4rem 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .hero-content { animation: none; opacity: 1; transform: none; transition: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Аренда<em>Яхт</em>Ялта</div>
+  <span class="nav-phone">+7 900 123-45-67</span>
+  <button class="nav-cta">В Telegram</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <span class="hero-tag">Яхтенная марина · Ялта</span>
+    <h1 class="hero-title">Выйди<em>в море</em></h1>
+    <p class="hero-sub">15+ яхт, опытные капитаны, онлайн-бронирование. Парусные, моторные, катамараны.</p>
+    <div class="hero-actions">
+      <button class="btn-gold">Выбрать яхту</button>
+      <button class="btn-outline">WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-val">15+</div><div class="stat-lbl">яхт в марине</div></div>
+  <div class="stat"><div class="stat-val">500+</div><div class="stat-lbl">рейсов</div></div>
+  <div class="stat"><div class="stat-val">4.9★</div><div class="stat-lbl">рейтинг</div></div>
+  <div class="stat"><div class="stat-val">15 мин</div><div class="stat-lbl">выход в море</div></div>
+</div>
+
+<section class="fleet">
+  <div class="fleet-head reveal">
+    <h2 class="fleet-title">Наш флот</h2>
+    <span class="fleet-sub">от 4 000 ₽/час с капитаном</span>
+  </div>
+  <div class="fleet-grid">
+    <div class="yacht-card featured reveal">
+      <img class="yacht-img" src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1000&q=85" alt="Мария">
+      <div class="yacht-overlay">
+        <div class="yacht-type-tag">Парусная</div>
+        <div class="yacht-name">Мария</div>
+        <div class="yacht-price">8 чел. · от 4 000 ₽/час</div>
+      </div>
+    </div>
+    <div class="yacht-card reveal" style="transition-delay:80ms">
+      <img class="yacht-img" src="https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=700&q=80" alt="Посейдон">
+      <div class="yacht-overlay">
+        <div class="yacht-type-tag">Моторная</div>
+        <div class="yacht-name">Посейдон</div>
+        <div class="yacht-price">10 чел. · 5 500 ₽/час</div>
+      </div>
+    </div>
+    <div class="yacht-card reveal" style="transition-delay:140ms">
+      <img class="yacht-img" src="https://images.unsplash.com/photo-1605281317010-fe5ffe798166?auto=format&fit=crop&w=700&q=80" alt="Афина">
+      <div class="yacht-overlay">
+        <div class="yacht-type-tag">Премиум</div>
+        <div class="yacht-name">Афина</div>
+        <div class="yacht-price">6 чел. · 8 000 ₽/час</div>
+      </div>
+    </div>
+    <div class="yacht-card reveal" style="transition-delay:60ms">
+      <img class="yacht-img" src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=700&q=80" alt="Бриз">
+      <div class="yacht-overlay">
+        <div class="yacht-type-tag">Катамаран</div>
+        <div class="yacht-name">Бриз</div>
+        <div class="yacht-price">12 чел. · 6 000 ₽/час</div>
+      </div>
+    </div>
+    <div class="yacht-card reveal" style="transition-delay:100ms">
+      <img class="yacht-img" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=700&q=80" alt="Ялта">
+      <div class="yacht-overlay">
+        <div class="yacht-type-tag">Марина</div>
+        <div class="yacht-name">Ялта</div>
+        <div class="yacht-price">Все яхты · от 4 000 ₽</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

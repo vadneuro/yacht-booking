@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR-баннеры АрендаЯхтЯлта</title>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #1a1a2e;
+      font-family: 'Onest', sans-serif;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3rem;
+    }
+    h1 {
+      color: #fff;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 1rem;
+      text-align: center;
+      opacity: .5;
+    }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .controls button {
+      padding: .6rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Onest', sans-serif;
+      font-weight: 600;
+      font-size: .875rem;
+    }
+    .btn-print { background: #C9A227; color: #0A1628; }
+    .btn-print:hover { background: #b8911e; }
+
+    /* ========================
+       БАННЕР — формат A5 альбом
+       (210×148 мм → 794×560px @96dpi)
+       ======================== */
+    .banner {
+      width: 794px;
+      height: 560px;
+      background: oklch(12% 0.028 244);
+      border-radius: 16px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      position: relative;
+    }
+
+    /* Left: text */
+    .banner__left {
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+    .banner__logo {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: rgba(255,255,255,.6);
+      letter-spacing: -.02em;
+    }
+    .banner__logo span { color: #C9A227; }
+    .banner__headline {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: 2.25rem;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -.035em;
+    }
+    .banner__headline i { font-style: normal; color: #C9A227; }
+    .banner__sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,.65);
+      line-height: 1.55;
+      max-width: 32ch;
+      margin-top: .875rem;
+    }
+    .banner__pills {
+      display: flex;
+      gap: .625rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .pill {
+      padding: .35rem .875rem;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255,255,255,.18);
+      font-size: .8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.8);
+    }
+    .banner__cta {
+      margin-top: auto;
+      padding-top: 2rem;
+      font-size: .8rem;
+      color: rgba(255,255,255,.45);
+    }
+
+    /* Right: QR block */
+    .banner__right {
+      background: #fff;
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.75rem;
+      gap: 1rem;
+      position: relative;
+    }
+    .banner__right::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: #C9A227;
+    }
+    .qr-wrap {
+      width: 160px;
+      height: 160px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,.1);
+    }
+    .qr-wrap img { width: 100%; height: 100%; }
+    .qr-placeholder {
+      width: 160px; height: 160px;
+      border-radius: 12px;
+      background: #f8f8f8;
+      border: 2px dashed #ccc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      color: #999;
+      font-size: .75rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    .qr-url {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: .85rem;
+      color: #0A1628;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .qr-url span { color: #2563EB; }
+    .qr-sub {
+      font-size: .7rem;
+      color: #666;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .scan-label {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .72rem;
+      font-weight: 600;
+      color: #0A1628;
+      background: oklch(74% .12 76 / .15);
+      padding: .4rem .875rem;
+      border-radius: 20px;
+    }
+
+    /* Decorative waves */
+    .waves {
+      position: absolute;
+      bottom: 0; left: 0; right: 260px;
+      height: 80px;
+      opacity: .06;
+    }
+
+    /* ========================
+       ВАРИАНТ 2: вертикальный A5
+       (148×210 мм → 560×794px)
+       ======================== */
+    .banner-v {
+      width: 420px;
+      min-height: 594px;
+      background: oklch(12% 0.028 244);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      text-align: center;
+    }
+    .banner-v .banner__logo { font-size: .9rem; }
+    .banner-v .banner__headline {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: 1.75rem;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -.03em;
+    }
+    .banner-v .banner__headline i { color: #C9A227; font-style: normal; }
+    .banner-v .banner__sub {
+      font-size: .875rem;
+      color: rgba(255,255,255,.6);
+      line-height: 1.55;
+      max-width: 28ch;
+      margin: .875rem auto 0;
+    }
+    .banner-v .qr-section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .875rem;
+      width: 100%;
+    }
+    .banner-v .qr-wrap { width: 150px; height: 150px; }
+    .banner-v .qr-url { font-size: .8rem; }
+    .banner-v .banner__pills {
+      display: flex;
+      gap: .5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; gap: 0; }
+      h1, .controls { display: none; }
+      .banner, .banner-v { box-shadow: none; border-radius: 0; page-break-after: always; }
+    }
+  </style>
+</head>
+<body>
+  <h1>QR-баннеры для яхтенной марины · Распечатать → Ctrl+P / ⌘P</h1>
+
+  <div class="controls">
+    <button class="btn-print" onclick="window.print()">🖨 Распечатать</button>
+  </div>
+
+  <!-- БАННЕР 1: горизонтальный A5 -->
+  <div class="banner">
+    <div class="banner__left">
+      <div class="banner__logo">Аренда<span>Яхт</span>Ялта</div>
+      <div>
+        <h2 class="banner__headline">Яхта<br>в <i>аренду</i><br>прямо сейчас</h2>
+        <p class="banner__sub">15+ яхт в яхтенной марине. Опытные капитаны. Выход в море за 15 минут.</p>
+        <div class="banner__pills">
+          <span class="pill">от 4 000 ₽/час</span>
+          <span class="pill">без прав</span>
+          <span class="pill">с капитаном</span>
+        </div>
+      </div>
+      <p class="banner__cta">Отсканируй QR — агент ответит за 1 минуту</p>
+    </div>
+
+    <div class="banner__right">
+      <div class="qr-placeholder">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="3" height="3"/>
+          <rect x="19" y="14" width="2" height="2"/>
+          <rect x="14" y="19" width="2" height="2"/>
+          <rect x="18" y="18" width="3" height="3"/>
+        </svg>
+        <span>Вставь QR<br>своего сайта<br>или Telegram</span>
+      </div>
+      <div class="qr-url">arenda-<br>yaht-<span>yalta.ru</span></div>
+      <div class="scan-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+        Сканируй камерой
+      </div>
+    </div>
+
+    <svg class="waves" viewBox="0 0 534 80" preserveAspectRatio="none">
+      <path d="M0,40 C80,0 160,80 240,40 C320,0 400,80 480,40 C510,24 524,16 534,40 L534,80 L0,80 Z" fill="white"/>
+    </svg>
+  </div>
+
+  <!-- БАННЕР 2: вертикальный (для стойки / пирса) -->
+  <div class="banner-v">
+    <div class="banner__logo">Аренда<span style="color:#C9A227">Яхт</span>Ялта</div>
+
+    <div>
+      <h2 class="banner__headline">Аренда яхты<br>в <i>Ялте</i></h2>
+      <p class="banner__sub">Парусные, моторные яхты и катамараны. С капитаном. Для компании от 4 до 12 человек.</p>
+      <div class="banner__pills" style="margin-top:1.25rem">
+        <span class="pill" style="border-color:rgba(201,162,39,.4);color:#C9A227">от 4 000 ₽/час</span>
+        <span class="pill">без прав</span>
+        <span class="pill">онлайн-бронь</span>
+      </div>
+    </div>
+
+    <div class="qr-section">
+      <div class="qr-placeholder" style="width:150px;height:150px">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="3" height="3"/>
+          <rect x="19" y="14" width="2" height="2"/>
+          <rect x="14" y="19" width="2" height="2"/>
+          <rect x="18" y="18" width="3" height="3"/>
+        </svg>
+        <span style="font-size:.7rem">QR-код</span>
+      </div>
+      <div class="qr-url">arenda-yaht-<span>yalta.ru</span></div>
+      <div class="qr-sub">Отсканируй камерой телефона<br>и выбери яхту прямо сейчас</div>
+      <div class="scan-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Написать в Telegram
+      </div>
+    </div>
+  </div>
+
+  <div style="color:rgba(255,255,255,.3);font-size:.75rem;text-align:center;padding-bottom:2rem">
+    QR-код вставить через <a href="https://qr-code-generator.com" target="_blank" style="color:rgba(255,255,255,.5)">qr-code-generator.com</a> → ссылка на t.me/arenda_yaht_yalta или arenda-yaht-yalta.ru
+  </div>
+</body>
+</html>

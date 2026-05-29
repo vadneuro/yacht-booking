@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview C — Azure Mediterranean</title>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@75,400;75,700;100,700;100,900&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Onest', sans-serif; background: oklch(97% 0.006 212); color: oklch(16% 0.018 240); overflow-x: hidden; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 3rem;
+  background: transparent;
+  transition: background 300ms ease, backdrop-filter 300ms ease;
+}
+nav.solid {
+  background: oklch(97% 0.006 212 / 0.94);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid oklch(90% 0.012 210);
+}
+.logo {
+  font-family: 'Anybody', sans-serif;
+  font-weight: 900; font-variation-settings: 'wdth' 100;
+  font-size: 1.1rem; color: oklch(97% 0.004 220);
+  letter-spacing: -.02em;
+}
+nav.solid .logo { color: oklch(16% 0.018 240); }
+.logo em { font-style: normal; color: oklch(64% 0.2 212); }
+nav.solid .logo em { color: oklch(54% 0.2 212); }
+.nav-cta {
+  padding: .55rem 1.4rem;
+  background: oklch(64% 0.2 212);
+  color: #fff; border: none; border-radius: 100px;
+  font-family: 'Onest', sans-serif; font-size: .875rem; font-weight: 600;
+  cursor: pointer; transition: background 180ms ease-out, transform 160ms ease-out;
+}
+.nav-cta:hover { background: oklch(55% 0.2 212); }
+.nav-cta:active { transform: scale(0.97); }
+
+/* ─── HERO ─── */
+.hero {
+  height: 100svh; min-height: 640px;
+  position: relative; display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 0 1.5rem;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=1800&q=85') center 60%/cover no-repeat;
+}
+.hero-bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%, oklch(45% 0.18 240 / 0.55) 0%, transparent 70%),
+    linear-gradient(180deg, oklch(22% 0.06 232 / 0.4) 0%, oklch(14% 0.04 240 / 0.7) 100%);
+}
+.hero-content {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 1.6rem;
+  opacity: 0; transform: translateY(28px);
+  animation: riseIn 1000ms cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
+}
+@keyframes riseIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-badge {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .4rem 1rem .4rem .5rem;
+  background: oklch(100% 0 0 / 0.14); backdrop-filter: blur(12px);
+  border: 1px solid oklch(100% 0 0 / 0.22); border-radius: 100px;
+  font-size: .75rem; font-weight: 600; color: oklch(95% 0.004 220);
+  letter-spacing: .04em;
+}
+.badge-dot { width: 8px; height: 8px; border-radius: 50%; background: oklch(72% 0.18 152); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+.hero-title {
+  font-family: 'Anybody', sans-serif;
+  font-weight: 900; font-variation-settings: 'wdth' 100;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: .92; letter-spacing: -.03em;
+  color: oklch(98% 0.002 220);
+  max-width: 16ch;
+}
+.hero-title em {
+  font-style: normal; display: block;
+  font-variation-settings: 'wdth' 75;
+  color: oklch(75% 0.15 192);
+}
+.hero-sub {
+  font-size: clamp(.95rem, 1.4vw, 1.15rem);
+  color: oklch(88% 0.01 220);
+  max-width: 46ch; line-height: 1.65;
+}
+.hero-actions { display: flex; gap: .875rem; flex-wrap: wrap; justify-content: center; margin-top: .5rem; }
+.btn-primary {
+  padding: .9rem 2.2rem;
+  background: oklch(64% 0.2 212);
+  color: #fff; border: none; border-radius: 100px;
+  font-family: 'Onest', sans-serif; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: background 180ms ease-out, transform 160ms ease-out;
+}
+.btn-primary:hover { background: oklch(55% 0.2 212); }
+.btn-primary:active { transform: scale(0.97); }
+.btn-ghost {
+  padding: .9rem 2.2rem;
+  background: oklch(100% 0 0 / 0.14); backdrop-filter: blur(8px);
+  color: oklch(98% 0.002 220); border: 1.5px solid oklch(100% 0 0 / 0.28);
+  border-radius: 100px;
+  font-family: 'Onest', sans-serif; font-size: 1rem; font-weight: 500;
+  cursor: pointer; transition: background 180ms ease-out, transform 160ms ease-out;
+}
+.btn-ghost:hover { background: oklch(100% 0 0 / 0.22); }
+.btn-ghost:active { transform: scale(0.97); }
+
+/* ─── SCROLL INDICATOR ─── */
+.scroll-hint {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+  color: oklch(100% 0 0 / 0.45);
+  opacity: 0; animation: riseIn 800ms ease 1200ms forwards;
+}
+.scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom, oklch(100% 0 0 / 0.4), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+@keyframes scrollPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ─── TRUST STRIP ─── */
+.trust-strip {
+  background: oklch(14% 0.024 240);
+  display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
+}
+.trust-item { padding: 1.75rem 3rem; border-right: 1px solid oklch(97% 0.004 220 / 0.06); text-align: center; }
+.trust-item:last-child { border: none; }
+.trust-num {
+  font-family: 'Anybody', sans-serif; font-variation-settings: 'wdth' 100;
+  font-weight: 900; font-size: 2rem; letter-spacing: -.03em;
+  color: oklch(75% 0.15 192);
+}
+.trust-lbl { font-size: .75rem; color: oklch(55% 0.015 240); text-transform: uppercase; letter-spacing: .06em; margin-top: .2rem; }
+
+/* ─── YACHTS ─── */
+.yachts { padding: 6rem 3rem; max-width: 1240px; margin: 0 auto; }
+.section-head { margin-bottom: 3.5rem; }
+.eyebrow { font-size: .73rem; letter-spacing: .14em; text-transform: uppercase; color: oklch(54% 0.2 212); margin-bottom: .65rem; }
+.section-title {
+  font-family: 'Anybody', sans-serif; font-variation-settings: 'wdth' 100;
+  font-weight: 900; font-size: clamp(2.5rem, 5vw, 4.8rem);
+  letter-spacing: -.04em; line-height: .95;
+}
+.section-title em { font-style: normal; color: oklch(64% 0.2 212); font-variation-settings: 'wdth' 75; }
+
+/* Mosaic grid */
+.mosaic {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: 280px 280px;
+  gap: 1rem;
+}
+.mcard { position: relative; border-radius: 16px; overflow: hidden; cursor: pointer; }
+.mcard:first-child { grid-row: span 2; }
+.mcard img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mcard:hover img { transform: scale(1.07); }
+.mcard:active { transform: scale(0.99); }
+.mcard-info {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, oklch(10% 0.02 240 / 0.88) 0%, transparent 50%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 1.5rem; transition: background 300ms ease;
+}
+.mcard:hover .mcard-info { background: linear-gradient(to top, oklch(10% 0.02 240 / 0.95) 0%, oklch(10% 0.02 240 / 0.1) 65%); }
+.mcard-cat { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: oklch(75% 0.15 192); margin-bottom: .35rem; }
+.mcard-name {
+  font-family: 'Anybody', sans-serif; font-variation-settings: 'wdth' 100;
+  font-weight: 900; font-size: 1.5rem; letter-spacing: -.02em; text-transform: uppercase;
+  color: oklch(97% 0.004 220);
+}
+.mcard:first-child .mcard-name { font-size: 2.6rem; }
+.mcard-price { font-size: .85rem; color: oklch(78% 0.01 240); margin-top: .3rem; }
+.mcard-btn {
+  display: inline-block; margin-top: .875rem;
+  padding: .5rem 1.2rem;
+  background: oklch(64% 0.2 212);
+  color: #fff; border-radius: 100px;
+  font-size: .78rem; font-weight: 600;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 220ms ease-out, transform 220ms ease-out;
+}
+.mcard:hover .mcard-btn { opacity: 1; transform: translateY(0); }
+
+/* ─── SCROLL REVEALS ─── */
+.reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+  .mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .mcard:first-child { grid-row: span 1; }
+  nav { padding: 1rem 1.25rem; }
+  .yachts { padding: 4rem 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .hero-content { animation: none; opacity: 1; transform: none; transition: none; }
+  .badge-dot { animation: none; }
+  .scroll-line { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="logo">Аренда<em>Яхт</em>Ялта</div>
+  <button class="nav-cta">Забронировать</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      Яхтенная марина · Ялта — доступно сейчас
+    </div>
+    <h1 class="hero-title">Аренда<em>яхт</em>в Ялте</h1>
+    <p class="hero-sub">15+ яхт на любой случай. Опытные капитаны, выход в море за 15 минут. Без прав, без суеты.</p>
+    <div class="hero-actions">
+      <button class="btn-primary">Выбрать яхту →</button>
+      <button class="btn-ghost">Написать в Telegram</button>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>скролл</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="trust-strip">
+  <div class="trust-item"><div class="trust-num">15+</div><div class="trust-lbl">яхт</div></div>
+  <div class="trust-item"><div class="trust-num">500+</div><div class="trust-lbl">рейсов</div></div>
+  <div class="trust-item"><div class="trust-num">4.9★</div><div class="trust-lbl">рейтинг</div></div>
+  <div class="trust-item"><div class="trust-num">15 мин</div><div class="trust-lbl">выход в море</div></div>
+</div>
+
+<section class="yachts">
+  <div class="section-head reveal">
+    <div class="eyebrow">Наш флот</div>
+    <h2 class="section-title">Белые яхты,<br><em>синее море</em></h2>
+  </div>
+  <div class="mosaic">
+    <div class="mcard reveal">
+      <img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1000&q=85" alt="Мария — парусная яхта">
+      <div class="mcard-info">
+        <div class="mcard-cat">Парусная</div>
+        <div class="mcard-name">Мария</div>
+        <div class="mcard-price">8 чел. · от 4 000 ₽/час</div>
+        <div class="mcard-btn">Забронировать</div>
+      </div>
+    </div>
+    <div class="mcard reveal" style="transition-delay:80ms">
+      <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=800&q=80" alt="Посейдон — моторная яхта">
+      <div class="mcard-info">
+        <div class="mcard-cat">Моторная</div>
+        <div class="mcard-name">Посейдон</div>
+        <div class="mcard-price">10 чел. · 5 500 ₽/час</div>
+        <div class="mcard-btn">Забронировать</div>
+      </div>
+    </div>
+    <div class="mcard reveal" style="transition-delay:150ms">
+      <img src="https://images.unsplash.com/photo-1605281317010-fe5ffe798166?auto=format&fit=crop&w=800&q=80" alt="Афина — премиум">
+      <div class="mcard-info">
+        <div class="mcard-cat">Премиум</div>
+        <div class="mcard-name">Афина</div>
+        <div class="mcard-price">6 чел. · 8 000 ₽/час</div>
+        <div class="mcard-btn">Забронировать</div>
+      </div>
+    </div>
+    <div class="mcard reveal" style="transition-delay:100ms">
+      <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80" alt="Бриз — катамаран">
+      <div class="mcard-info">
+        <div class="mcard-cat">Катамаран</div>
+        <div class="mcard-name">Бриз</div>
+        <div class="mcard-price">12 чел. · 6 000 ₽/час</div>
+        <div class="mcard-btn">Забронировать</div>
+      </div>
+    </div>
+    <div class="mcard reveal" style="transition-delay:180ms">
+      <img src="https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=800&q=80" alt="Ялта — марина">
+      <div class="mcard-info">
+        <div class="mcard-cat">Все яхты</div>
+        <div class="mcard-name">Ялта</div>
+        <div class="mcard-price">от 4 000 ₽/час</div>
+        <div class="mcard-btn">Смотреть все</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => { nav.classList.toggle('solid', scrollY > 60); });
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "arenda-yaht-yalta-agent",
+  "version": "1.0.0",
+  "description": "Нейроагент АрендаЯхтЯлта — Telegram + WhatsApp",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
+    "@supabase/supabase-js": "^2.49.4",
+    "grammy": "^1.36.1",
+    "dotenv": "^16.4.7"
+  }
+}

@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --navy: oklch(12% 0.028 244);
+  --navy-mid: oklch(17% 0.028 244);
+  --blue: oklch(52% 0.20 250);
+  --gold: oklch(74% 0.12 76);
+  --surface: oklch(97.5% 0.006 244);
+  --white: oklch(98.5% 0.002 244);
+  --muted: oklch(50% 0.015 244);
+}
+
+body {
+  background: var(--surface);
+  color: var(--navy);
+}
