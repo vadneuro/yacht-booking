@@ -1,6 +1,6 @@
 // Центральный data layer — сейчас mock, легко заменить на Supabase
 
-export type YachtType = 'sailing' | 'motor' | 'catamaran' | 'premium';
+export type YachtType = 'sailing' | 'motor' | 'catamaran';
 export type BookingStatus = 'pending' | 'confirmed' | 'paid' | 'cancelled' | 'completed';
 
 export interface Owner {
@@ -93,9 +93,9 @@ export const YACHTS: Yacht[] = [
     id: 'dddddddd-dddd-dddd-dddd-dddddddddddd',
     ownerId: 'owner-2',
     name: 'Афина',
-    type: 'premium', typeLabel: 'Премиум',
+    type: 'motor', typeLabel: 'Моторная',
     capacity: 6, pricePerHour: 8000,
-    description: 'Яхта премиум-класса для особых событий. Люкс-отделка, персональный капитан.',
+    description: 'Яхта для особых событий. Люкс-отделка, персональный капитан.',
     photos: ['https://images.unsplash.com/photo-1605281317010-fe5ffe798166?auto=format&fit=crop&w=900&q=80'],
     features: ['VIP-каюта', 'Полная кухня', 'Бар', 'Дайвинг-снаряжение', 'Аудиосистема'],
     isActive: true,
