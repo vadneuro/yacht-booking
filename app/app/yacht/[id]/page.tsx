@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, use, useRef } from 'react';
+import { useState, use, useRef, useEffect, useCallback } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -53,6 +53,7 @@ export default function YachtDetailPage({ params }: Props) {
 }
 
 function GallerySection({ yacht }: { yacht: Yacht }) {
+  const [activePhoto, setActivePhoto] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -61,60 +62,197 @@ function GallerySection({ yacht }: { yacht: Yacht }) {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.6]);
 
+  const goNext = useCallback(() => setActivePhoto(i => (i + 1) % yacht.photos.length), [yacht.photos.length]);
+  const goPrev = useCallback(() => setActivePhoto(i => (i - 1 + yacht.photos.length) % yacht.photos.length), [yacht.photos.length]);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') goNext();
+      else if (e.key === 'ArrowLeft') goPrev();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [goNext, goPrev]);
+
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="relative w-full aspect-[21/9] md:aspect-[2.5/1] overflow-hidden"
-    >
-      <motion.img
-        src={yacht.photos[0]}
-        alt={yacht.name}
-        className="w-full h-full object-cover"
-        style={{ scale, opacity }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30" />
+    <div>
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden bg-[var(--navy)]"
+      >
+        <motion.img
+          src={yacht.photos[activePhoto]}
+          alt={yacht.name}
+          className="w-full h-full object-contain"
+          style={{ scale, opacity }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30" />
 
-      {/* Back button */}
-      <div className="absolute top-6 left-6">
-        <Link
-          href="/catalog"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm text-sm font-medium text-[var(--navy)] hover:bg-white transition-colors shadow-sm"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Назад
-        </Link>
-      </div>
-
-      {/* Title overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
-        <div className="max-w-7xl mx-auto">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white border border-white/20 mb-3">
-            {yacht.typeLabel}
-          </span>
-          <h1 className="text-3xl md:text-5xl font-bold text-white">
-            {yacht.name}
-          </h1>
+        {/* Back button */}
+        <div className="absolute top-6 left-6">
+          <Link
+            href="/catalog"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm text-sm font-medium text-[var(--navy)] hover:bg-white transition-colors shadow-sm"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Назад
+          </Link>
         </div>
-      </div>
-    </motion.div>
+
+        {/* Photo counter */}
+        {yacht.photos.length > 1 && (
+          <div className="absolute top-6 right-6">
+            <span className="px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm text-xs font-semibold text-white">
+              {activePhoto + 1} / {yacht.photos.length}
+            </span>
+          </div>
+        )}
+
+        {/* Nav arrows */}
+        {yacht.photos.length > 1 && (
+          <>
+            <button
+              onClick={goPrev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 transition-colors"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button
+              onClick={goNext}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 transition-colors"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </>
+        )}
+
+        {/* Title overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+          <div className="max-w-7xl mx-auto">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white border border-white/20 mb-3">
+              {yacht.typeLabel}
+            </span>
+            <h1 className="text-3xl md:text-5xl font-bold text-white">
+              {yacht.name}
+            </h1>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Thumbnail strip */}
+      {yacht.photos.length > 1 && (
+        <div className="bg-[var(--navy)] px-5 py-3 overflow-x-auto">
+          <div className="max-w-7xl mx-auto flex gap-2">
+            {yacht.photos.map((photo, i) => (
+              <button
+                key={i}
+                onClick={() => setActivePhoto(i)}
+                className={`flex-shrink-0 w-16 h-12 md:w-20 md:h-14 rounded-lg overflow-hidden transition-all ${
+                  activePhoto === i ? 'ring-2 ring-white opacity-100' : 'opacity-50 hover:opacity-80'
+                }`}
+              >
+                <img src={photo} alt="" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RichText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split('\n\n').map((block, i) => (
+        <div key={i} className="mb-5">
+          {block.split('\n').map((line, j) => {
+            const parts = line.split(/\*\*(.+?)\*\*/);
+            const hasFormatting = parts.length > 1;
+            if (line.startsWith('• ')) {
+              const content = line.slice(2);
+              const cParts = content.split(/\*\*(.+?)\*\*/);
+              return (
+                <div key={j} className="flex gap-2.5 mb-2.5 pl-1">
+                  <span className="text-[var(--azure)] mt-0.5 flex-shrink-0">•</span>
+                  <p>
+                    {cParts.map((part, k) =>
+                      k % 2 === 1
+                        ? <strong key={k} className="text-[var(--navy)]">{part}</strong>
+                        : <span key={k}>{part}</span>
+                    )}
+                  </p>
+                </div>
+              );
+            }
+            if (hasFormatting) {
+              return (
+                <p key={j} className="mb-1.5">
+                  {parts.map((part, k) =>
+                    k % 2 === 1
+                      ? <strong key={k} className="text-[var(--navy)]">{part}</strong>
+                      : <span key={k}>{part}</span>
+                  )}
+                </p>
+              );
+            }
+            return line.trim() ? <p key={j} className="mb-2">{line}</p> : null;
+          })}
+        </div>
+      ))}
+    </>
   );
 }
 
 function YachtInfo({ yacht }: { yacht: Yacht }) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <p className="text-lg text-[var(--muted)] leading-relaxed mb-8">
+      <p className="text-lg text-[var(--muted)] leading-relaxed mb-6">
         {yacht.description}
       </p>
+
+      {yacht.longDescription && (
+        <div className="mb-8">
+          <div className="relative">
+            <div
+              className={`overflow-hidden transition-all duration-700 ease-out text-sm text-[var(--muted)] leading-relaxed ${
+                expanded ? 'max-h-[5000px]' : 'max-h-[180px]'
+              }`}
+            >
+              <RichText text={yacht.longDescription} />
+            </div>
+
+            {!expanded && (
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+            )}
+          </div>
+
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[var(--azure)] hover:text-[var(--navy)] transition-colors"
+          >
+            {expanded ? 'Свернуть' : 'Читать подробнее'}
+            <motion.svg
+              width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+              animate={{ rotate: expanded ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <path d="M6 9l6 6 6-6"/>
+            </motion.svg>
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
