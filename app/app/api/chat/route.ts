@@ -8,8 +8,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'empty message' }, { status: 400 });
     }
     const id = sessionId || `web-${Date.now()}`;
-    const reply = await chat(id, message.trim());
-    return NextResponse.json({ reply, sessionId: id });
+    const result = await chat(id, message.trim());
+    return NextResponse.json({
+      reply: result.reply,
+      sessionId: id,
+      bookingId: result.bookingId,
+      action: result.action,
+    });
   } catch (err) {
     console.error('chat api error:', err);
     return NextResponse.json({ error: 'server error' }, { status: 500 });

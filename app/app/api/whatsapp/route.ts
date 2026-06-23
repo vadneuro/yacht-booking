@@ -19,9 +19,9 @@ export async function POST(req: NextRequest) {
 
     // Используем номер как session ID
     const sessionId = `wa-${from.replace(/\D/g, '')}`;
-    const reply = await chat(sessionId, text.trim());
+    const result = await chat(sessionId, text.trim());
 
-    return twiml(reply);
+    return twiml(result.reply);
   } catch (err) {
     console.error('whatsapp webhook error:', err);
     return twiml('Что-то пошло не так. Позвони нам: +7 900 123-45-67');

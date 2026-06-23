@@ -8,7 +8,8 @@ import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import ContactHub from '@/components/ui/ContactHub';
-import { getYachtById, createBooking, type Yacht } from '@/lib/data';
+import { getYachtById, createBooking, COMMISSION_RATE, type Yacht } from '@/lib/data';
+import { createNotification } from '@/lib/notifications';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -218,7 +219,7 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
     clientPhone: '',
     notes: '',
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [bookingId, setBookingId] = useState<string | null>(null);
 
   const hours = () => {
     if (!form.timeStart || !form.timeEnd) return 0;
@@ -228,11 +229,12 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
   };
 
   const total = Math.round(hours() * yacht.pricePerHour);
+  const commission = Math.round(total * COMMISSION_RATE);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (hours() <= 0) return;
-    createBooking({
+    const booking = createBooking({
       yachtId: yacht.id,
       yachtName: yacht.name,
       date: form.date,
@@ -242,11 +244,18 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
       clientPhone: form.clientPhone,
       notes: form.notes,
       amount: total,
+      type: 'standard',
+      source: 'form',
     });
-    setSubmitted(true);
+    createNotification({
+      type: 'new_booking',
+      bookingId: booking.id,
+      message: `Новое бронирование: ${yacht.name}, ${booking.date} ${form.timeStart}–${form.timeEnd}, ${form.clientName}`,
+    });
+    setBookingId(booking.id);
   };
 
-  if (submitted) {
+  if (bookingId) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -258,15 +267,27 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <h3 className="text-lg font-bold text-[var(--navy)] mb-2">Заявка отправлена!</h3>
-        <p className="text-sm text-[var(--muted)] mb-4">
-          Мы свяжемся с вами в течение 15 минут для подтверждения.
+        <h3 className="text-lg font-bold text-[var(--navy)] mb-2">Бронирование создано!</h3>
+        <p className="text-sm text-[var(--muted)] mb-2">
+          Оплатите бронь <span className="font-bold text-[var(--navy)]">{commission.toLocaleString('ru')} ₽</span> для подтверждения.
         </p>
-        <button
-          onClick={() => setSubmitted(false)}
-          className="text-sm font-semibold text-[var(--azure)] hover:underline"
+        <p className="text-xs text-[var(--muted)] mb-5">
+          Остаток {(total - commission).toLocaleString('ru')} ₽ — капитану в день прогулки.
+        </p>
+        <a
+          href={`/booking/${bookingId}/pay`}
+          className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-white
+                     bg-gradient-to-r from-[var(--azure)] to-[var(--teal)]
+                     shadow-lg shadow-[var(--azure)]/25 hover:shadow-[var(--azure)]/40
+                     hover:scale-[1.01] active:scale-[0.99] transition-all"
         >
-          Новая заявка
+          Оплатить бронь {commission.toLocaleString('ru')} ₽
+        </a>
+        <button
+          onClick={() => setBookingId(null)}
+          className="mt-3 text-sm font-semibold text-[var(--azure)] hover:underline"
+        >
+          Новое бронирование
         </button>
       </motion.div>
     );
@@ -334,11 +355,16 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
 
           {/* Price calc */}
           {total > 0 && (
-            <div className="p-4 rounded-xl bg-[var(--azure-light)] border border-[var(--azure)]/10">
+            <div className="p-4 rounded-xl bg-[var(--azure-light)] border border-[var(--azure)]/10 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-[var(--muted)]">{hours()} ч × {yacht.pricePerHour.toLocaleString('ru')} ₽</span>
                 <span className="font-bold text-[var(--navy)]">{total.toLocaleString('ru')} ₽</span>
               </div>
+              <div className="flex justify-between text-sm pt-2 border-t border-[var(--azure)]/10">
+                <span className="text-[var(--azure)] font-medium">Бронь (15%)</span>
+                <span className="font-bold text-[var(--azure)]">{commission.toLocaleString('ru')} ₽</span>
+              </div>
+              <p className="text-[10px] text-[var(--muted)]">Остальное оплачивается капитану напрямую</p>
             </div>
           )}
 
@@ -395,7 +421,7 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
                        disabled:opacity-40 disabled:hover:scale-100 disabled:shadow-none
                        transition-all"
           >
-            Забронировать
+            Отправить заявку
           </button>
 
           {/* Trust */}

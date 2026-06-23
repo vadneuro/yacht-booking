@@ -41,6 +41,8 @@ export default function YachtPage({ params }: Props) {
       amount: Math.round(
         ((parseInt(data.timeEnd) - parseInt(data.timeStart)) * yacht.pricePerHour)
       ),
+      type: 'standard',
+      source: 'form',
     });
     const bMonth = parseInt(data.date.split('-')[1]);
     const bYear = parseInt(data.date.split('-')[0]);

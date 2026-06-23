@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   getYachts, getBookings, OWNERS,
   updateBookingStatus,
   type Booking, type BookingStatus,
-  STATUS_LABELS, STATUS_COLORS,
+  STATUS_LABELS, STATUS_COLORS, SOURCE_LABELS,
+  COMMISSION_RATE,
 } from '@/lib/data';
+import { type Notification } from '@/lib/notifications';
 
 const ADMIN_PIN = '2026';  // TODO: заменить на env + нормальную авторизацию
 
@@ -61,15 +63,41 @@ export default function AdminPage() {
     else { setPinError(true); setPin(''); }
   }
 
+  // ---- Notifications ----
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifs, setShowNotifs] = useState(false);
+
+  useEffect(() => {
+    if (!auth) return;
+    const poll = () => fetch('/api/notifications').then(r => r.json()).then(d => {
+      setNotifications(d.notifications || []);
+      setUnreadCount(d.unreadCount || 0);
+    }).catch(() => {});
+    poll();
+    const interval = setInterval(poll, 30000);
+    return () => clearInterval(interval);
+  }, [auth]);
+
+  const markAllRead = () => {
+    fetch('/api/notifications', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ markAll: true }),
+    }).then(() => { setUnreadCount(0); setNotifications(ns => ns.map(n => ({ ...n, isRead: true }))); });
+  };
+
   // ---- Stats ----
+  const paidStatuses = ['commission_paid', 'confirmed', 'completed'] as const;
   const totalRevenue = bookings
-    .filter(b => b.status === 'paid' || b.status === 'completed')
+    .filter(b => paidStatuses.includes(b.status as typeof paidStatuses[number]))
     .reduce((s, b) => s + b.amount, 0);
 
-  const commissionRate = 0.15;
-  const totalCommission = Math.round(totalRevenue * commissionRate);
+  const totalCommission = bookings
+    .filter(b => paidStatuses.includes(b.status as typeof paidStatuses[number]))
+    .reduce((s, b) => s + b.commission, 0);
 
-  const pendingCount = bookings.filter(b => b.status === 'pending').length;
+  const actionCount = bookings.filter(b => b.status === 'pending' || b.status === 'commission_paid').length;
 
   const handleStatus = (id: string, status: BookingStatus) => {
     updateBookingStatus(id, status);
@@ -96,11 +124,47 @@ export default function AdminPage() {
             </span>
           </div>
           <div className="flex items-center gap-3">
-            {pendingCount > 0 && (
+            {actionCount > 0 && (
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-800">
-                {pendingCount} ожидают
+                {actionCount} требуют внимания
               </span>
             )}
+            {/* Notification bell */}
+            <div className="relative">
+              <button onClick={() => setShowNotifs(!showNotifs)}
+                className="relative p-2 rounded-lg hover:bg-black/5 transition-colors">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="2" strokeLinecap="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 flex items-center justify-center text-[9px] font-bold text-white bg-red-500 rounded-full min-w-[18px] px-1">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {showNotifs && (
+                <div className="absolute right-0 top-11 w-80 bg-white rounded-xl border border-black/10 shadow-2xl z-50 overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-black/6">
+                    <span className="text-sm font-bold" style={{ color: 'var(--navy)' }}>Уведомления</span>
+                    {unreadCount > 0 && (
+                      <button onClick={markAllRead} className="text-xs font-semibold text-blue-500 hover:underline">
+                        Прочитать все
+                      </button>
+                    )}
+                  </div>
+                  <div className="max-h-72 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <p className="px-4 py-6 text-sm text-center" style={{ color: 'var(--muted)' }}>Нет уведомлений</p>
+                    ) : notifications.slice(0, 10).map(n => (
+                      <div key={n.id} className={`px-4 py-3 border-b border-black/4 text-sm ${n.isRead ? '' : 'bg-blue-50/50'}`}>
+                        <p className="text-xs" style={{ color: 'var(--navy)' }}>{n.message}</p>
+                        <p className="text-[10px] mt-1 text-gray-400">{new Date(n.createdAt).toLocaleString('ru')}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <button onClick={() => setAuth(false)}
               className="text-sm hover:opacity-70 transition-opacity" style={{ color: 'var(--muted)' }}>
               Выйти
@@ -134,7 +198,7 @@ export default function AdminPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {[
                 { label: 'Яхт в системе', value: yachts.length, sub: `${OWNERS.length} владельца` },
-                { label: 'Всего броней', value: bookings.length, sub: `${pendingCount} ожидают` },
+                { label: 'Всего броней', value: bookings.length, sub: `${actionCount} требуют внимания` },
                 { label: 'Оборот', value: `${totalRevenue.toLocaleString('ru')} ₽`, sub: 'оплачено' },
                 { label: 'Комиссия 15%', value: `${totalCommission.toLocaleString('ru')} ₽`, sub: 'ваш доход' },
               ].map(kpi => (
@@ -146,14 +210,14 @@ export default function AdminPage() {
               ))}
             </div>
 
-            {/* Pending bookings */}
-            {pendingCount > 0 && (
+            {/* Action-required bookings */}
+            {actionCount > 0 && (
               <div>
                 <h3 className="font-semibold text-sm mb-3" style={{ color: 'var(--navy)' }}>
-                  Ожидают подтверждения
+                  Требуют внимания
                 </h3>
                 <div className="space-y-2">
-                  {bookings.filter(b => b.status === 'pending').map(b => (
+                  {bookings.filter(b => b.status === 'pending' || b.status === 'commission_paid').map(b => (
                     <AdminBookingRow key={b.id} booking={b} yachts={yachts} onStatus={handleStatus} />
                   ))}
                 </div>
@@ -166,7 +230,7 @@ export default function AdminPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {yachts.map(y => {
                   const yBookings = bookings.filter(b => b.yachtId === y.id && b.status !== 'cancelled');
-                  const revenue = yBookings.filter(b => ['paid','completed'].includes(b.status))
+                  const revenue = yBookings.filter(b => ['commission_paid','confirmed','completed'].includes(b.status))
                     .reduce((s, b) => s + b.amount, 0);
                   return (
                     <div key={y.id} className="bg-white rounded-xl border border-black/8 p-4">
@@ -202,7 +266,7 @@ export default function AdminPage() {
           <div className="space-y-4">
             {/* Status filter */}
             <div className="flex gap-2 flex-wrap">
-              {(['all', 'pending', 'confirmed', 'paid', 'cancelled', 'completed'] as const).map(s => (
+              {(['all', 'pending', 'commission_paid', 'confirmed', 'cancelled', 'completed'] as const).map(s => (
                 <button key={s} onClick={() => setFilterStatus(s)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     filterStatus === s ? 'text-white' : 'bg-white border border-black/10 hover:border-black/20'
@@ -233,9 +297,9 @@ export default function AdminPage() {
             {OWNERS.map(owner => {
               const ownerYachts = yachts.filter(y => y.ownerId === owner.id);
               const ownerRevenue = bookings
-                .filter(b => ownerYachts.some(y => y.id === b.yachtId) && ['paid','completed'].includes(b.status))
+                .filter(b => ownerYachts.some(y => y.id === b.yachtId) && ['commission_paid','confirmed','completed'].includes(b.status))
                 .reduce((s, b) => s + b.amount, 0);
-              const commission = Math.round(ownerRevenue * commissionRate);
+              const commission = Math.round(ownerRevenue * COMMISSION_RATE);
 
               return (
                 <div key={owner.id} className="bg-white rounded-xl border border-black/8 p-5">
@@ -279,7 +343,6 @@ export default function AdminPage() {
   );
 }
 
-// Sub-component: booking row
 function AdminBookingRow({
   booking, yachts, onStatus, expanded = false,
 }: {
@@ -301,17 +364,26 @@ function AdminBookingRow({
     setLoading(false);
   };
 
-  const dateFormatted = booking.date.split('-').reverse().join('.');
+  const dateFormatted = booking.date ? booking.date.split('-').reverse().join('.') : '—';
+  const isInquiry = booking.type === 'inquiry';
 
   return (
-    <div className="bg-white rounded-xl border border-black/8 p-4">
+    <div className={`bg-white rounded-xl border p-4 ${isInquiry ? 'border-amber-200' : 'border-black/8'}`}>
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="space-y-0.5">
-          <p className="font-semibold text-sm" style={{ color: 'var(--navy)' }}>
-            {booking.yachtName} · {dateFormatted} {booking.timeStart}–{booking.timeEnd}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold text-sm" style={{ color: 'var(--navy)' }}>
+              {booking.yachtName}{booking.date ? ` · ${dateFormatted} ${booking.timeStart}–${booking.timeEnd}` : ''}
+            </p>
+            {isInquiry && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">
+                ЗАЯВКА
+              </span>
+            )}
+          </div>
           <p className="text-xs" style={{ color: 'var(--muted)' }}>
             {booking.clientName} · {booking.clientPhone}
+            <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-black/5">{SOURCE_LABELS[booking.source]}</span>
           </p>
           {booking.notes && <p className="text-xs text-gray-400">{booking.notes}</p>}
         </div>
@@ -319,14 +391,46 @@ function AdminBookingRow({
           <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[booking.status]}`}>
             {STATUS_LABELS[booking.status]}
           </span>
-          <span className="text-sm font-bold" style={{ color: 'var(--blue)' }}>
-            {booking.amount.toLocaleString('ru')} ₽
-          </span>
+          {booking.amount > 0 && (
+            <div className="text-right">
+              <span className="text-sm font-bold block" style={{ color: 'var(--navy)' }}>
+                {booking.amount.toLocaleString('ru')} ₽
+              </span>
+              <span className="text-[10px] text-emerald-600 font-medium">
+                бронь: {booking.commission.toLocaleString('ru')} ₽
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Quick actions */}
-      {booking.status === 'pending' && (
+      {booking.status === 'pending' && isInquiry && (
+        <div className="flex gap-2 mt-3">
+          <button onClick={() => handle('confirmed')} disabled={loading}
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 transition-colors">
+            Взять в работу
+          </button>
+          <button onClick={() => handle('cancelled')} disabled={loading}
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black/6 hover:bg-black/10 disabled:opacity-50 transition-colors"
+            style={{ color: 'var(--muted)' }}>
+            Отклонить
+          </button>
+        </div>
+      )}
+      {booking.status === 'pending' && !isInquiry && (
+        <div className="flex gap-2 mt-3">
+          <span className="px-3 py-1.5 text-xs font-medium rounded-lg bg-yellow-50 text-yellow-700">
+            Ожидает оплаты брони клиентом
+          </span>
+          <button onClick={() => handle('cancelled')} disabled={loading}
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black/6 hover:bg-black/10 disabled:opacity-50 transition-colors"
+            style={{ color: 'var(--muted)' }}>
+            Отменить
+          </button>
+        </div>
+      )}
+      {booking.status === 'commission_paid' && (
         <div className="flex gap-2 mt-3">
           <button onClick={() => handle('confirmed')} disabled={loading}
             className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 transition-colors">
@@ -335,15 +439,15 @@ function AdminBookingRow({
           <button onClick={() => handle('cancelled')} disabled={loading}
             className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black/6 hover:bg-black/10 disabled:opacity-50 transition-colors"
             style={{ color: 'var(--muted)' }}>
-            Отменить
+            Отменить (возврат)
           </button>
         </div>
       )}
       {booking.status === 'confirmed' && (
         <div className="flex gap-2 mt-3">
-          <button onClick={() => handle('paid')} disabled={loading}
+          <button onClick={() => handle('completed')} disabled={loading}
             className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 transition-colors">
-            Отметить оплачено
+            Завершить
           </button>
         </div>
       )}

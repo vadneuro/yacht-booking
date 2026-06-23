@@ -65,11 +65,11 @@ export default function CaptainBookingCard({ booking, onStatusChange }: Props) {
           )}
           {booking.status === 'confirmed' && (
             <button
-              onClick={() => handle('paid')}
+              onClick={() => handle('completed')}
               disabled={loading}
               className="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
             >
-              Оплачено
+              Завершить
             </button>
           )}
           <button
@@ -82,7 +82,7 @@ export default function CaptainBookingCard({ booking, onStatusChange }: Props) {
           </button>
         </div>
       )}
-      {booking.status === 'paid' && (
+      {booking.status === 'commission_paid' && (
         <button
           onClick={() => handle('completed')}
           disabled={loading}

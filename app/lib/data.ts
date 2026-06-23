@@ -1,11 +1,15 @@
 // Центральный data layer — сейчас mock, легко заменить на Supabase
 
 export type YachtType = 'sailing' | 'motor' | 'catamaran';
-export type BookingStatus = 'pending' | 'confirmed' | 'paid' | 'cancelled' | 'completed';
+export type BookingStatus = 'pending' | 'commission_paid' | 'confirmed' | 'cancelled' | 'completed';
+export type BookingType = 'standard' | 'inquiry';
+export type BookingSource = 'form' | 'web_chat' | 'telegram';
+
+export const COMMISSION_RATE = 0.15;
 
 export interface Owner {
   id: string;
-  token: string;       // URL-токен для доступа /captain/TOKEN
+  token: string;
   name: string;
   phone: string;
   telegram?: string;
@@ -36,6 +40,9 @@ export interface Booking {
   clientPhone: string;
   status: BookingStatus;
   amount: number;
+  commission: number;
+  type: BookingType;
+  source: BookingSource;
   notes?: string;
 }
 
@@ -108,21 +115,24 @@ let BOOKINGS: Booking[] = [
     yachtId: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', yachtName: 'Мария',
     date: '2026-06-05', timeStart: '10:00', timeEnd: '14:00',
     clientName: 'Александр Смирнов', clientPhone: '+79001112233',
-    status: 'confirmed', amount: 16000,
+    status: 'confirmed', amount: 16000, commission: 2400,
+    type: 'standard', source: 'form',
   },
   {
     id: 'booking-2',
     yachtId: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', yachtName: 'Посейдон',
     date: '2026-06-05', timeStart: '12:00', timeEnd: '18:00',
     clientName: 'Марина Козлова', clientPhone: '+79004445566',
-    status: 'paid', amount: 33000,
+    status: 'commission_paid', amount: 33000, commission: 4950,
+    type: 'standard', source: 'web_chat',
   },
   {
     id: 'booking-3',
     yachtId: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', yachtName: 'Мария',
     date: '2026-06-07', timeStart: '09:00', timeEnd: '13:00',
     clientName: 'Дмитрий Петров', clientPhone: '+79007778899',
-    status: 'pending', amount: 16000,
+    status: 'pending', amount: 16000, commission: 2400,
+    type: 'inquiry', source: 'telegram',
   },
 ];
 
@@ -164,8 +174,18 @@ export function getBookingsForMonth(yachtId: string, year: number, month: number
   return BOOKINGS.filter(b => b.yachtId === yachtId && b.date.startsWith(prefix));
 }
 
-export function createBooking(data: Omit<Booking, 'id' | 'status'>): Booking {
-  const booking: Booking = { ...data, id: `booking-${Date.now()}`, status: 'pending' };
+export function getBookingById(id: string): Booking | undefined {
+  return BOOKINGS.find(b => b.id === id);
+}
+
+export function createBooking(data: Omit<Booking, 'id' | 'status' | 'commission'> & { status?: BookingStatus }): Booking {
+  const commission = Math.round(data.amount * COMMISSION_RATE);
+  const booking: Booking = {
+    ...data,
+    id: `booking-${Date.now()}`,
+    status: data.status || 'pending',
+    commission,
+  };
   BOOKINGS.push(booking);
   return booking;
 }
@@ -194,16 +214,22 @@ export function removeBlockedSlot(id: string): void {
 
 export const STATUS_LABELS: Record<BookingStatus, string> = {
   pending: 'Ожидает',
+  commission_paid: 'Бронь оплачена',
   confirmed: 'Подтверждено',
-  paid: 'Оплачено',
   cancelled: 'Отменено',
   completed: 'Завершено',
 };
 
 export const STATUS_COLORS: Record<BookingStatus, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
+  commission_paid: 'bg-emerald-100 text-emerald-800',
   confirmed: 'bg-blue-100 text-blue-800',
-  paid: 'bg-green-100 text-green-800',
   cancelled: 'bg-gray-100 text-gray-500',
   completed: 'bg-gray-100 text-gray-700',
+};
+
+export const SOURCE_LABELS: Record<BookingSource, string> = {
+  form: 'Форма',
+  web_chat: 'Чат',
+  telegram: 'Telegram',
 };
