@@ -263,7 +263,7 @@ function YachtInfo({ yacht }: { yacht: Yacht }) {
           },
           {
             label: 'Цена',
-            value: `${yacht.pricePerHour.toLocaleString('ru')} ₽/ч`,
+            value: yacht.type === 'training' ? `${yacht.pricePerHour.toLocaleString('ru')} ₽` : `${yacht.pricePerHour.toLocaleString('ru')} ₽/ч`,
             icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
           },
           {
@@ -366,12 +366,13 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
     return Math.max(0, (eh * 60 + em - sh * 60 - sm) / 60);
   };
 
-  const total = Math.round(hours() * yacht.pricePerHour);
+  const isTraining = yacht.type === 'training';
+  const total = isTraining ? yacht.pricePerHour : Math.round(hours() * yacht.pricePerHour);
   const commission = Math.round(total * COMMISSION_RATE);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (hours() <= 0) return;
+    if (!isTraining && hours() <= 0) return;
     const booking = createBooking({
       yachtId: yacht.id,
       yachtName: yacht.name,
@@ -444,7 +445,7 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
           <span className="text-2xl font-bold text-[var(--navy)]">
             {yacht.pricePerHour.toLocaleString('ru')} ₽
           </span>
-          <span className="text-sm text-[var(--muted)]">/ час</span>
+          <span className="text-sm text-[var(--muted)]">{yacht.type === 'training' ? '/ занятие' : '/ час'}</span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -495,14 +496,14 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
           {total > 0 && (
             <div className="p-4 rounded-xl bg-[var(--azure-light)] border border-[var(--azure)]/10 space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-[var(--muted)]">{hours()} ч × {yacht.pricePerHour.toLocaleString('ru')} ₽</span>
+                <span className="text-[var(--muted)]">{isTraining ? 'Занятие (4 ч, до 6 чел.)' : `${hours()} ч × ${yacht.pricePerHour.toLocaleString('ru')} ₽`}</span>
                 <span className="font-bold text-[var(--navy)]">{total.toLocaleString('ru')} ₽</span>
               </div>
               <div className="flex justify-between text-sm pt-2 border-t border-[var(--azure)]/10">
                 <span className="text-[var(--azure)] font-medium">Бронь (15%)</span>
                 <span className="font-bold text-[var(--azure)]">{commission.toLocaleString('ru')} ₽</span>
               </div>
-              <p className="text-[10px] text-[var(--muted)]">Остальное оплачивается капитану напрямую</p>
+              <p className="text-[10px] text-[var(--muted)]">{isTraining ? 'Остальное оплачивается инструктору' : 'Остальное оплачивается капитану напрямую'}</p>
             </div>
           )}
 
