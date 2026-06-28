@@ -105,7 +105,7 @@ export default function HomePage() {
                 className="block mt-2 bg-gradient-to-r from-[var(--azure)] via-[var(--teal)] to-[var(--azure)] bg-clip-text text-transparent animate-gradient-text"
                 style={{ backgroundSize: '200% auto' }}
               >
-                в Крыму
+                в Ялте
               </motion.span>
             </h1>
 
