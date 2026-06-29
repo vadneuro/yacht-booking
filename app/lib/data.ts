@@ -304,6 +304,7 @@ export const YACHTS: Yacht[] = [
 **Важно:** Капитан включён. Топливо включено. Оптимально 6-8 человек. Бесплатная отмена за 24 часа.`,
     photos: [
       '/yachts/nicole/09.jpg',
+      '/yachts/nicole/14-bbq.jpg',
       '/yachts/nicole/10.jpg',
       '/yachts/nicole/13.jpg',
       '/yachts/nicole/02.jpg',
