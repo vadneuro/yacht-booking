@@ -105,11 +105,11 @@ Natatores — латинское название плавающих птиц. �
 
 **Важно:** Капитан и команда включены. Топливо включено. Бесплатная отмена за 24 часа.`,
     photos: [
+      '/yachts/natatores/03-sunset.jpg',
+      '/yachts/natatores/04-swallow-nest.jpg',
       '/yachts/natatores/01-sailing.jpg',
       '/yachts/natatores/02-couple.jpg',
       '/yachts/natatores/06-detail.jpg',
-      '/yachts/natatores/04-swallow-nest.jpg',
-      '/yachts/natatores/03-sunset.jpg',
       '/yachts/natatores/05-deck.jpg',
     ],
     features: ['18 м, океанский класс', '4 каюты', '8 спальных мест', 'Паруса', 'Тиковая палуба', 'Купальная платформа', 'Камбуз с духовкой', 'Кают-компания'],
