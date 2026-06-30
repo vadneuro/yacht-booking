@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     return twiml(result.reply);
   } catch (err) {
     console.error('whatsapp webhook error:', err);
-    return twiml('Что-то пошло не так. Позвони нам: +7 900 123-45-67');
+    return twiml('Что-то пошло не так. Позвони нам: +7 979 084-00-89');
   }
 }
 

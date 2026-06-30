@@ -36,7 +36,7 @@ export function createBot(token) {
 
   bot.callbackQuery('call', async (ctx) => {
     await ctx.answerCallbackQuery();
-    await ctx.reply('Позвонить напрямую: +7 900 123-45-67');
+    await ctx.reply('Позвонить напрямую: +7 979 084-00-89');
   });
 
   // Все текстовые сообщения — через нейроагента
@@ -63,7 +63,7 @@ export function createBot(token) {
       }
     } catch (err) {
       console.error('Agent error:', err);
-      await ctx.reply('Что-то пошло не так. Попробуй ещё раз или позвони: +7 900 123-45-67');
+      await ctx.reply('Что-то пошло не так. Попробуй ещё раз или позвони: +7 979 084-00-89');
     }
   });
 
