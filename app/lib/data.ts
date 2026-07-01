@@ -26,6 +26,7 @@ export interface Yacht {
   description: string;
   longDescription?: string;
   photos: string[];
+  thumbnailPosition?: string;
   features: string[];
   isActive: boolean;
 }
@@ -105,9 +106,9 @@ Natatores — латинское название плавающих птиц. �
 
 **Важно:** Капитан и команда включены. Топливо включено. Бесплатная отмена за 24 часа.`,
     photos: [
+      '/yachts/natatores/01-sailing.jpg',
       '/yachts/natatores/03-sunset.jpg',
       '/yachts/natatores/04-swallow-nest.jpg',
-      '/yachts/natatores/01-sailing.jpg',
       '/yachts/natatores/02-couple.jpg',
       '/yachts/natatores/06-detail.jpg',
       '/yachts/natatores/05-deck.jpg',
@@ -310,6 +311,7 @@ Natatores — латинское название плавающих птиц. �
 
 **Важно:** Капитан включён. Топливо включено. Оптимально 6-8 человек. Бесплатная отмена за 24 часа.`,
     photos: [
+      '/yachts/nicole/01.jpg',
       '/yachts/nicole/09.jpg',
       '/yachts/nicole/14-bbq.jpg',
       '/yachts/nicole/10.jpg',
@@ -319,7 +321,6 @@ Natatores — латинское название плавающих птиц. �
       '/yachts/nicole/08.jpg',
       '/yachts/nicole/12.jpg',
       '/yachts/nicole/11.jpg',
-      '/yachts/nicole/01.jpg',
       '/yachts/nicole/03.jpg',
       '/yachts/nicole/05.jpg',
       '/yachts/nicole/06.jpg',
@@ -363,8 +364,8 @@ Natatores — латинское название плавающих птиц. �
 
 **Важно:** Капитан включён. Топливо включено. Бесплатная отмена за 24 часа.`,
     photos: [
-      '/yachts/aurora/02-dolphins.jpg',
       '/yachts/aurora/01-swallow-nest.jpg',
+      '/yachts/aurora/02-dolphins.jpg',
       '/yachts/aurora/03-dolphins2.jpg',
       '/yachts/aurora/04-sailing.jpg',
       '/yachts/aurora/05-coast.jpg',

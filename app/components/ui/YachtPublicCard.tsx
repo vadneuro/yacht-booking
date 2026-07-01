@@ -20,11 +20,12 @@ export default function YachtPublicCard({ yacht, index = 0 }: Props) {
       <Link href={`/yacht/${yacht.id}`} className="group block">
         <div className="rounded-2xl overflow-hidden bg-white border border-black/[0.04] hover-lift card-shine">
           {/* Image */}
-          <div className="relative aspect-[16/11] overflow-hidden">
+          <div className="relative aspect-[16/11] overflow-hidden bg-[#051d35]">
             <img
               src={yacht.photos[0]}
               alt={yacht.name}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              style={{ objectPosition: yacht.thumbnailPosition ?? 'center' }}
             />
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
