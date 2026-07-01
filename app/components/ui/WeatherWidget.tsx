@@ -6,6 +6,7 @@ interface Weather {
   airTemp: number;
   seaTemp: number;
   windSpeed: number;
+  waveHeight: number;
 }
 
 export default function WeatherWidget() {
@@ -16,13 +17,14 @@ export default function WeatherWidget() {
       try {
         const [airRes, seaRes] = await Promise.all([
           fetch('https://api.open-meteo.com/v1/forecast?latitude=44.5&longitude=34.17&current=temperature_2m,wind_speed_10m&wind_speed_unit=ms'),
-          fetch('https://marine-api.open-meteo.com/v1/marine?latitude=44.5&longitude=34.17&current=sea_surface_temperature'),
+          fetch('https://marine-api.open-meteo.com/v1/marine?latitude=44.5&longitude=34.17&current=sea_surface_temperature,wave_height'),
         ]);
         const [airData, seaData] = await Promise.all([airRes.json(), seaRes.json()]);
         setWeather({
           airTemp: Math.round(airData.current.temperature_2m),
           windSpeed: Math.round(airData.current.wind_speed_10m),
           seaTemp: Math.round(seaData.current.sea_surface_temperature),
+          waveHeight: Math.round(seaData.current.wave_height * 10) / 10,
         });
       } catch {
         // silent fail — виджет просто не показывается
@@ -63,6 +65,17 @@ export default function WeatherWidget() {
           ),
           label: 'Ветер',
           value: `${weather.windSpeed} м/с`,
+        },
+        {
+          icon: (
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5s2.5 2 5 2 2.5-2 5-2"/>
+              <path d="M2 12c.6.5 1.2 1 2.5 1C7 13 7 11 9.5 11s2.5 2 5 2 2.5-2 5-2"/>
+              <path d="M2 18c.6.5 1.2 1 2.5 1C7 19 7 17 9.5 17s2.5 2 5 2 2.5-2 5-2"/>
+            </svg>
+          ),
+          label: 'Волна',
+          value: `${weather.waveHeight} м`,
         },
       ].map((item, i) => (
         <div
