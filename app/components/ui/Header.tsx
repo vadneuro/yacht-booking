@@ -41,7 +41,7 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-8">
             {[
               { href: '/catalog', label: 'Яхты' },
-              { href: '#destinations', label: 'Направления' },
+              { href: '/routes', label: 'Маршруты' },
               { href: '#how-it-works', label: 'Как это работает' },
             ].map(link => (
               <Link
@@ -98,7 +98,7 @@ export default function Header() {
           <div className="px-5 py-4 space-y-3">
             {[
               { href: '/catalog', label: 'Яхты' },
-              { href: '#destinations', label: 'Направления' },
+              { href: '/routes', label: 'Маршруты' },
               { href: '#how-it-works', label: 'Как это работает' },
             ].map(link => (
               <Link

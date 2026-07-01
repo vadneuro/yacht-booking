@@ -53,7 +53,7 @@ export default function ContactHub() {
     {
       id: 'welcome',
       role: 'assistant',
-      content: 'Привет! Я — ИИ-помощник Glissa. Помогу подобрать яхту, рассчитать стоимость и забронировать. Спрашивайте!',
+      content: 'Привет! Я - ИИ-помощник Glissa. Помогу подобрать яхту, рассчитать стоимость и забронировать. Спрашивайте!',
       time: new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -332,7 +332,7 @@ export default function ContactHub() {
                 </button>
               </div>
               <p className="text-center text-[10px] text-black/25 mt-2">
-                Claude AI — отвечает 24/7
+                Claude AI - отвечает 24/7
               </p>
             </div>
           </motion.div>

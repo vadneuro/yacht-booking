@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Link from 'next/link';
 import Header from '@/components/ui/Header';
 import SearchBar from '@/components/ui/SearchBar';
 import YachtPublicCard from '@/components/ui/YachtPublicCard';
@@ -12,6 +13,7 @@ import ParticlesField from '@/components/ui/ParticlesField';
 import TiltCard from '@/components/ui/TiltCard';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import CursorGlow from '@/components/ui/CursorGlow';
+import WeatherWidget from '@/components/ui/WeatherWidget';
 import CountUp from '@/components/ui/CountUp';
 import { getYachts } from '@/lib/data';
 
@@ -84,7 +86,7 @@ export default function HomePage() {
                 <span className="absolute inset-0 rounded-full bg-emerald-400" />
               </span>
               <span className="text-xs font-semibold text-white/90 tracking-wide">
-                Сезон 2026 открыт — бронируйте лучшие даты
+                Сезон 2026 открыт - бронируйте лучшие даты
               </span>
             </motion.div>
 
@@ -122,12 +124,22 @@ export default function HomePage() {
             </motion.p>
           </motion.div>
 
+          {/* Weather */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.7 }}
+            className="mt-8"
+          >
+            <WeatherWidget />
+          </motion.div>
+
           {/* Search */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-            className="mt-12"
+            className="mt-8"
           >
             <SearchBar variant="hero" />
           </motion.div>
@@ -355,7 +367,7 @@ export default function HomePage() {
                 <p className="text-sm text-[var(--navy)] font-medium leading-snug">
                   &laquo;Невероятные впечатления! Капитан показал скрытые бухты&raquo;
                 </p>
-                <p className="text-xs text-[var(--muted)] mt-2">— Анна М., июнь 2026</p>
+                <p className="text-xs text-[var(--muted)] mt-2">- Анна М., июнь 2026</p>
               </motion.div>
 
               {/* Floating stat card */}
@@ -403,10 +415,10 @@ export default function HomePage() {
 
               <div className="space-y-5">
                 {[
-                  { title: 'Сертифицированные капитаны', desc: 'Каждый — с многолетним опытом и международными лицензиями.', emoji: '🧭' },
+                  { title: 'Сертифицированные капитаны', desc: 'Каждый - с многолетним опытом и международными лицензиями.', emoji: '🧭' },
                   { title: 'Прозрачные цены', desc: 'Цена = финальная сумма. Топливо и оснащение уже включены.', emoji: '💎' },
                   { title: 'Гибкая отмена', desc: 'Бесплатная отмена за 24 часа. Ваши деньги в безопасности.', emoji: '🛡' },
-                  { title: 'Мгновенное подтверждение', desc: 'Без ожидания. Бронируйте — и через минуту всё готово.', emoji: '⚡' },
+                  { title: 'Мгновенное подтверждение', desc: 'Без ожидания. Бронируйте - и через минуту всё готово.', emoji: '⚡' },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -453,7 +465,7 @@ export default function HomePage() {
             {[
               { name: 'Ласточкино гнездо', time: '2–3 ч', price: 'от 8 000 ₽', image: 'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?auto=format&fit=crop&w=800&q=80', tag: 'Популярный' },
               { name: 'Бухта Ласпи', time: '4–5 ч', price: 'от 16 000 ₽', image: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=800&q=80', tag: 'Снорклинг' },
-              { name: 'Форос — Балаклава', time: '6–8 ч', price: 'от 24 000 ₽', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80', tag: 'Приключение' },
+              { name: 'Форос - Балаклава', time: '6–8 ч', price: 'от 24 000 ₽', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80', tag: 'Приключение' },
             ].map((dest, i) => (
               <motion.div
                 key={dest.name}
@@ -498,6 +510,24 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-center mt-10"
+          >
+            <Link
+              href="/routes"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border-2 border-[var(--navy)] text-[var(--navy)] font-semibold text-sm hover:bg-[var(--navy)] hover:text-white transition-all duration-300"
+            >
+              Все 15 маршрутов
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
@@ -522,7 +552,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { name: 'Алексей К.', text: 'Потрясающая прогулка! Капитан Иван показал невероятные места, куда невозможно добраться пешком. Дети в восторге.', yacht: 'Мануну', rating: 5 },
-              { name: 'Марина С.', text: 'Организовали день рождения на яхте. Всё прошло идеально — от встречи до шампанского на закате. Рекомендую!', yacht: 'Паласса', rating: 5 },
+              { name: 'Марина С.', text: 'Организовали день рождения на яхте. Всё прошло идеально - от встречи до шампанского на закате. Рекомендую!', yacht: 'Паласса', rating: 5 },
               { name: 'Дмитрий П.', text: 'Первый раз на парусной яхте. Спокойно, тихо, ветер в лицо. Совсем другое ощущение моря. Вернёмся обязательно.', yacht: 'Аврора', rating: 5 },
             ].map((review, i) => (
               <motion.div

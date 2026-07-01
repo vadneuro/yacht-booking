@@ -7,11 +7,11 @@ export function createBot(token) {
     ? parseInt(process.env.ADMIN_TELEGRAM_ID)
     : null;
 
-  // /start — приветствие
+  // /start - приветствие
   bot.command('start', async (ctx) => {
     const name = ctx.from?.first_name ?? 'гость';
     await ctx.reply(
-      `Привет, ${name}! Я помогу подобрать и забронировать яхту в Ялте.\n\nПросто напиши — например, «хочу яхту на 6 человек в эти выходные» или «что у вас есть?»`,
+      `Привет, ${name}! Я помогу подобрать и забронировать яхту в Ялте.\n\nПросто напиши - например, «хочу яхту на 6 человек в эти выходные» или «что у вас есть?»`,
       {
         reply_markup: new InlineKeyboard()
           .text('🛥 Показать яхты', 'show_yachts')
@@ -21,7 +21,7 @@ export function createBot(token) {
     );
   });
 
-  // /new — сброс контекста
+  // /new - сброс контекста
   bot.command('new', async (ctx) => {
     clearHistory(ctx.chat.id);
     await ctx.reply('Начинаем сначала. Чем могу помочь?');
@@ -39,7 +39,7 @@ export function createBot(token) {
     await ctx.reply('Позвонить напрямую: +7 979 084-00-89');
   });
 
-  // Все текстовые сообщения — через нейроагента
+  // Все текстовые сообщения - через нейроагента
   bot.on('message:text', async (ctx) => {
     const text = ctx.message.text;
     if (text.startsWith('/')) return;
