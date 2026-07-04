@@ -18,8 +18,8 @@ export const metadata: Metadata = {
   keywords: 'аренда яхт, яхта в аренду, яхтенная прогулка, прокат яхт, Ялта, Крым',
   alternates: { canonical: 'https://glissa.ru' },
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
-    yandex: process.env.YANDEX_VERIFICATION,
+    yandex: '576b7c71cf9fe3e5',
+    google: 'rwET-kwUtIxxeVIDxbPJZaDolXfmJCeEXT9iBk09Pr4',
   },
   openGraph: {
     title: 'Аренда яхт в Ялте 2026 | Glissa',
