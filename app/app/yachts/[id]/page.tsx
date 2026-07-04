@@ -2,6 +2,7 @@
 
 import { useState, use } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getYachtById, getBookingsForMonth, createBooking, STATUS_LABELS, STATUS_COLORS } from '@/lib/data';
 import BookingCalendar from '@/components/BookingCalendar';
@@ -80,9 +81,14 @@ export default function YachtPage({ params }: Props) {
           {/* Left: yacht info */}
           <div className="lg:col-span-1 space-y-4">
             <div className="rounded-xl overflow-hidden bg-white border border-black/8">
-              <div className="aspect-[4/3] overflow-hidden">
-                <img src={yacht.photos[0]} alt={yacht.name}
-                  className="w-full h-full object-cover" />
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <Image
+                  fill
+                  src={yacht.photos[0]}
+                  alt={yacht.name}
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                />
               </div>
               <div className="p-4 space-y-3">
                 <div>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import type { Yacht } from '@/lib/data';
 
@@ -17,18 +18,33 @@ export default function YachtPublicCard({ yacht, index = 0 }: Props) {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Link href={`/yacht/${yacht.id}`} className="group block">
+      <Link href={`/yacht/${yacht.slug ?? yacht.id}`} className="group block">
         <div className="rounded-2xl overflow-hidden bg-white border border-black/[0.04] hover-lift card-shine">
           {/* Image */}
           <div className="relative aspect-[16/11] overflow-hidden bg-[#051d35]">
-            <img
+            <Image
+              fill
               src={yacht.photos[0]}
-              alt={yacht.name}
-              className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              alt={`Яхта ${yacht.name} - аренда в Ялте`}
+              className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               style={{ objectPosition: yacht.thumbnailPosition ?? 'center' }}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={index === 0}
             />
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            {/* Promo badge */}
+            {yacht.badge && (
+              <div className="absolute top-4 right-4 z-10">
+                <span className="inline-flex items-center gap-1 text-[11px] font-black tracking-wide uppercase px-3 py-1.5 rounded-full shadow-lg animate-pulse-slow"
+                  style={{ background: 'linear-gradient(135deg, #f97316, #ec4899)', color: '#fff', boxShadow: '0 0 16px rgba(249,115,22,0.5)' }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {yacht.badge}
+                </span>
+              </div>
+            )}
 
             {/* Type badge */}
             <div className="absolute top-4 left-4">

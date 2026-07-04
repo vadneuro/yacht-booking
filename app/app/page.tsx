@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import Header from '@/components/ui/Header';
 import SearchBar from '@/components/ui/SearchBar';
 import YachtPublicCard from '@/components/ui/YachtPublicCard';
@@ -16,6 +17,7 @@ import CursorGlow from '@/components/ui/CursorGlow';
 import WeatherWidget from '@/components/ui/WeatherWidget';
 import CountUp from '@/components/ui/CountUp';
 import { getYachts } from '@/lib/data';
+import SchemaOrg from '@/components/ui/SchemaOrg';
 
 export default function HomePage() {
   const yachts = getYachts();
@@ -341,11 +343,14 @@ export default function HomePage() {
               transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
               className="relative"
             >
-              <div className="rounded-[2rem] overflow-hidden aspect-[4/3] shadow-2xl shadow-black/10">
-                <img
+              <div className="relative rounded-[2rem] overflow-hidden aspect-[4/3] shadow-2xl shadow-black/10">
+                <Image
+                  fill
                   src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80"
-                  alt="Яхта на воде"
-                  className="w-full h-full object-cover"
+                  alt="Яхтенная прогулка в Ялте - аренда яхт от Glissa"
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority
                 />
               </div>
 
@@ -476,10 +481,12 @@ export default function HomePage() {
               >
                 <TiltCard intensity={4}>
                   <div className="group relative rounded-3xl overflow-hidden aspect-[3/4] cursor-pointer">
-                    <img
+                    <Image
+                      fill
                       src={dest.image}
-                      alt={dest.name}
-                      className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+                      alt={`Яхтенная прогулка ${dest.name} - маршрут из Ялты`}
+                      className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
                     />
                     {/* Multi-layer gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -528,6 +535,133 @@ export default function HomePage() {
               </svg>
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════════ SUNRISE / SUNSET ═══════════ */}
+      <section className="relative overflow-hidden">
+        {/* Full-bleed background */}
+        <div className="absolute inset-0">
+          <Image
+            fill
+            src="https://images.unsplash.com/photo-1541690215789-9b383ac81e33?auto=format&fit=crop&w=2000&q=85"
+            alt="Закат над крымскими горами с моря"
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-900/30 via-transparent to-amber-900/20" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-8 py-32 md:py-44">
+          {/* Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}
+            className="text-center mb-20"
+          >
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400 mb-4 block">
+              Особые выходы
+            </span>
+            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight">
+              Эмоции, которые
+              <br />
+              <span className="bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 bg-clip-text text-transparent">
+                останутся на всю жизнь
+              </span>
+            </h2>
+            <p className="mt-6 text-lg text-white/55 max-w-2xl mx-auto leading-relaxed font-light">
+              Есть моменты, которые невозможно пережить с берега. Встреча рассвета или проводы заката
+              на яхте посреди Чёрного моря — это не просто красота. Это точка отсчёта нового.
+            </p>
+          </motion.div>
+
+          {/* Two cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {[
+              {
+                time: 'Рассвет',
+                hours: '05:30 — 08:00',
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M12 2v4M4.93 7.93l2.83 2.83M2 16h4M20 16h-4M19.07 7.93l-2.83 2.83"/>
+                    <path d="M12 10a4 4 0 0 1 4 4H8a4 4 0 0 1 4-4z"/>
+                    <path d="M2 20h20"/>
+                  </svg>
+                ),
+                gradient: 'from-sky-500/20 to-indigo-500/10',
+                accent: 'border-sky-400/30',
+                tag: 'bg-sky-400/20 text-sky-200',
+                tagText: 'Тихое утро',
+                desc: 'Море стеклянное. Ни людей, ни шума. Только вы, горизонт и первые лучи, которые окрашивают воду в золото. Такого рассвета вы не видели никогда.',
+              },
+              {
+                time: 'Закат',
+                hours: '19:00 — 22:00',
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M12 10a4 4 0 0 1 4 4H8a4 4 0 0 1 4-4z"/>
+                    <path d="M2 20h20M4.93 14.07l2.83-2.83M2 8h4M20 8h-4M19.07 14.07l-2.83-2.83"/>
+                  </svg>
+                ),
+                gradient: 'from-orange-500/20 to-rose-500/10',
+                accent: 'border-orange-400/30',
+                tag: 'bg-orange-400/20 text-orange-200',
+                tagText: 'Самый популярный',
+                desc: 'Солнце падает в море, небо горит от оранжевого до малинового, огни Ялты зажигаются один за другим. Бокал вина. Тишина. Человек рядом. Лучшего вечера не придумать.',
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={item.time}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: i * 0.15, ease: [0.23, 1, 0.32, 1] }}
+              >
+                <div className={`relative p-8 rounded-3xl bg-gradient-to-br ${item.gradient} backdrop-blur-md border ${item.accent} border-white/10 h-full flex flex-col gap-5 group hover:scale-[1.02] transition-transform duration-500`}>
+                  {/* Icon + time */}
+                  <div className="flex items-start justify-between">
+                    <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-500">
+                      {item.icon}
+                    </div>
+                    <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${item.tag}`}>
+                      {item.tagText}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-2xl font-black text-white mb-1">{item.time}</h3>
+                    <p className="text-sm text-white/40 font-medium">{item.hours}</p>
+                  </div>
+
+                  <p className="text-white/70 leading-relaxed text-sm flex-1">{item.desc}</p>
+
+                  <a
+                    href="/catalog"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white transition-colors group/link"
+                  >
+                    Забронировать выход
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="group-hover/link:translate-x-1 transition-transform">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Bottom quote */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="text-center mt-16 text-white/30 text-sm italic max-w-xl mx-auto"
+          >
+            Каждый выход — это 2-3 часа, которые вы будете вспоминать годами
+          </motion.p>
         </div>
       </section>
 
@@ -596,6 +730,125 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ═══════════ КАК ДОБРАТЬСЯ ═══════════ */}
+      <section id="location" className="py-20 md:py-28 px-5 md:px-8 bg-[var(--surface)]">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--azure)] mb-3 block">Где нас найти</span>
+            <h2 className="text-3xl md:text-4xl font-black text-[var(--navy)] tracking-tight">Как добраться до причала</h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Left: info */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="space-y-5"
+            >
+              {/* Address */}
+              <div className="flex gap-4 p-5 bg-white rounded-2xl border border-black/[0.04] shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-[var(--azure-light)] text-[var(--azure)] flex items-center justify-center shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-[var(--navy)] mb-0.5">Адрес причала</p>
+                  <address className="not-italic text-sm text-[var(--muted)] leading-relaxed">
+                    Набережная им. Ленина, 1<br />
+                    Ялта, Республика Крым, 298600
+                  </address>
+                </div>
+              </div>
+
+              {/* Hours */}
+              <div className="flex gap-4 p-5 bg-white rounded-2xl border border-black/[0.04] shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-[var(--azure-light)] text-[var(--azure)] flex items-center justify-center shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-[var(--navy)] mb-0.5">Часы работы</p>
+                  <p className="text-sm text-[var(--muted)]">09:00 - 22:00, май - октябрь</p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex gap-4 p-5 bg-white rounded-2xl border border-black/[0.04] shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-[var(--azure-light)] text-[var(--azure)] flex items-center justify-center shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-[var(--navy)] mb-0.5">Телефон</p>
+                  <a href="tel:+79790840089" className="text-sm text-[var(--azure)] hover:underline">+7 (979) 084-00-89</a>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right: directions + map link */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-white rounded-2xl border border-black/[0.04] shadow-sm p-6"
+            >
+              <h3 className="font-bold text-[var(--navy)] mb-4">Как добраться</h3>
+              <ul className="space-y-4 text-sm text-[var(--muted)]">
+                <li className="flex gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[var(--azure)] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+                  <span><strong className="text-[var(--navy)]">На такси:</strong> около 10 минут от центра города. Скажите водителю: "Морской причал, набережная Ленина".</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[var(--azure)] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+                  <span><strong className="text-[var(--navy)]">На маршрутке:</strong> до остановки "Набережная" - маршруты № 1, 5, 7 от автовокзала.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[var(--azure)] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+                  <span><strong className="text-[var(--navy)]">Пешком:</strong> 10 минут от центра набережной мимо Массандровского пляжа.</span>
+                </li>
+              </ul>
+
+              <div className="mt-6 pt-5 border-t border-black/[0.05] flex flex-col sm:flex-row gap-3">
+                <a
+                  href="https://yandex.ru/maps/?pt=34.1639,44.4963&z=17&l=map"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--navy)] text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  Яндекс Карты
+                </a>
+                <a
+                  href="https://2gis.ru/yalta?m=34.1639%2C44.4963%2F17"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[var(--navy)] text-[var(--navy)] text-sm font-semibold hover:bg-[var(--surface)] transition-colors"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  2ГИС
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ CTA ═══════════ */}
       <section className="py-24 md:py-32 px-5 md:px-8">
         <div className="max-w-5xl mx-auto">
@@ -659,8 +912,52 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ═══════════ SEO TEXT ═══════════ */}
+      <section className="bg-[var(--surface)] border-t border-black/[0.04] px-5 md:px-8 py-10">
+        <div className="max-w-4xl mx-auto">
+          <details className="group">
+            <summary className="flex items-center justify-between cursor-pointer list-none select-none">
+              <h2 className="text-base font-semibold text-[var(--navy)]">Прогулки на яхте в Ялте - аренда яхт 2026</h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--muted)] transition-transform duration-300 group-open:rotate-180 shrink-0">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+            <div className="mt-5 prose prose-sm max-w-none text-[var(--muted)] leading-relaxed space-y-4">
+              <p>
+                Ялта - один из лучших портовых городов Крыма для яхтенного отдыха. Тёплое Чёрное море, живописные берега и разнообразие маршрутов делают морские прогулки незабываемым опытом для каждого гостя полуострова. Glissa предлагает аренду яхт в Ялте с опытными капитанами - с мая по октябрь, ежедневно с 09:00 до 22:00.
+              </p>
+              <p>
+                В нашем флоте 11 яхт разных типов: парусные, моторные и катамараны вместимостью от 4 до 12 человек. Каждое судно технически исправно, застраховано и оснащено всем необходимым для комфортного отдыха на воде.
+              </p>
+              <h3 className="text-sm font-semibold text-[var(--navy)] mt-4 mb-2">Что включает прогулка на яхте в Ялте</h3>
+              <ul className="space-y-1 list-disc list-inside">
+                <li>Опытный капитан с международными лицензиями</li>
+                <li>Топливо и оснащение без доплат</li>
+                <li>Снаряжение для снорклинга</li>
+                <li>Страховка и спасательное оборудование</li>
+              </ul>
+              <h3 className="text-sm font-semibold text-[var(--navy)] mt-4 mb-2">Популярные маршруты яхтенных прогулок из Ялты</h3>
+              <ul className="space-y-1 list-disc list-inside">
+                <li>Ласточкино гнездо - 2-3 часа, вид на замок с моря</li>
+                <li>Бухта Ласпи - 4-5 часов, прозрачная вода и снорклинг</li>
+                <li>Симеиз и скала Дива - 3-4 часа, дикий берег</li>
+                <li>Форос - Балаклава - 6-8 часов, полный день на море</li>
+              </ul>
+              <h3 className="text-sm font-semibold text-[var(--navy)] mt-4 mb-2">Стоимость аренды яхты в Ялте 2026</h3>
+              <p>
+                Цены на аренду яхты в Ялте - от 8 000 рублей в час. Итоговая стоимость зависит от типа судна, продолжительности и маршрута. Минимальный срок - 2 часа. Оплата онлайн, бесплатная отмена за 24 часа. Все цены финальные - топливо и оснащение включены.
+              </p>
+              <p>
+                Забронировать морскую прогулку в Крыму можно онлайн за несколько минут: выберите яхту в каталоге, укажите дату и время - подтверждение придёт мгновенно.
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+
       <Footer />
       <ContactHub />
+      <SchemaOrg />
     </div>
   );
 }

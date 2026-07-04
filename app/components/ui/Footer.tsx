@@ -26,13 +26,11 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white text-sm mb-4">Яхты</h4>
             <ul className="space-y-2.5">
-              {['Моторные', 'Парусные', 'Катамараны'].map(item => (
-                <li key={item}>
-                  <Link href="/catalog" className="text-sm hover:text-white transition-colors">
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              <li><Link href="/catalog" className="text-sm hover:text-white transition-colors">Каталог яхт в Ялте</Link></li>
+              <li><Link href="/catalog" className="text-sm hover:text-white transition-colors">Моторные яхты</Link></li>
+              <li><Link href="/catalog" className="text-sm hover:text-white transition-colors">Парусные яхты</Link></li>
+              <li><Link href="/catalog" className="text-sm hover:text-white transition-colors">Катамараны</Link></li>
+              <li><Link href="/routes" className="text-sm hover:text-white transition-colors">Маршруты прогулок</Link></li>
             </ul>
           </div>
 
@@ -41,9 +39,9 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {['О нас', 'Контакты', 'Для владельцев', 'Блог'].map(item => (
                 <li key={item}>
-                  <Link href="#" className="text-sm hover:text-white transition-colors">
+                  <span className="text-sm text-white/70">
                     {item}
-                  </Link>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -52,11 +50,20 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white text-sm mb-4">Контакты</h4>
             <ul className="space-y-2.5 text-sm">
+              <li className="flex items-start gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                <address className="not-italic leading-relaxed text-white/70">
+                  Набережная им. Ленина, 1<br />
+                  Ялта, Республика Крым
+                </address>
+              </li>
               <li className="flex items-center gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/>
                 </svg>
-                +7 (979) 084-00-89
+                <a href="tel:+79790840089" className="hover:text-white transition-colors">+7 (979) 084-00-89</a>
               </li>
               <li className="flex items-center gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -80,8 +87,8 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Glissa. Все права защищены.
           </p>
           <div className="flex items-center gap-6 text-xs text-white/40">
-            <Link href="#" className="hover:text-white/70 transition-colors">Политика конфиденциальности</Link>
-            <Link href="#" className="hover:text-white/70 transition-colors">Оферта</Link>
+            <span>Политика конфиденциальности</span>
+            <span>Оферта</span>
           </div>
         </div>
       </div>

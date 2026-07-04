@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Yacht } from '@/lib/data';
 
 interface Props {
@@ -12,10 +13,12 @@ export default function YachtCard({ yacht, bookedDaysThisMonth = 0 }: Props) {
       <div className="rounded-xl overflow-hidden bg-white shadow-sm border border-black/5 hover:shadow-md transition-shadow">
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden">
-          <img
+          <Image
+            fill
             src={yacht.photos[0]}
             alt={yacht.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 768px) 100vw, 33vw"
           />
           <div className="absolute top-3 left-3">
             <span className="text-[11px] font-semibold tracking-widest uppercase px-2.5 py-1 rounded-full"

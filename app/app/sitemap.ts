@@ -1,16 +1,22 @@
 import { MetadataRoute } from 'next';
+import { getYachts } from '@/lib/data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://arenda-yaht-yalta.ru';
-  const yachtIds = ['mariya', 'poseidon', 'briz', 'afina'];
+  const base = 'https://glissa.ru';
+  const now = new Date();
 
-  return [
-    { url: base, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
-    ...yachtIds.map(id => ({
-      url: `${base}/yachts/${id}`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    })),
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: base,              lastModified: now, changeFrequency: 'weekly',  priority: 1.0 },
+    { url: `${base}/catalog`, lastModified: now, changeFrequency: 'weekly',  priority: 0.9 },
+    { url: `${base}/routes`,  lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
   ];
+
+  const yachtPages: MetadataRoute.Sitemap = getYachts().map(yacht => ({
+    url: `${base}/yacht/${yacht.slug ?? yacht.id}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...yachtPages];
 }

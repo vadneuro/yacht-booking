@@ -17,6 +17,7 @@ export interface Owner {
 
 export interface Yacht {
   id: string;
+  slug?: string;
   ownerId: string;
   name: string;
   type: YachtType;
@@ -27,6 +28,7 @@ export interface Yacht {
   longDescription?: string;
   photos: string[];
   thumbnailPosition?: string;
+  badge?: string;
   features: string[];
   isActive: boolean;
 }
@@ -67,6 +69,7 @@ export const OWNERS: Owner[] = [
 export const YACHTS: Yacht[] = [
   {
     id: 'kkkkkkkk-kkkk-kkkk-kkkk-kkkkkkkkkkkk',
+    slug: 'natatores',
     ownerId: 'owner-1',
     name: 'Натоторес',
     type: 'sailing', typeLabel: 'Парусная яхта',
@@ -118,10 +121,12 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee',
+    slug: 'manunu',
     ownerId: 'owner-1',
     name: 'Мануну',
     type: 'catamaran', typeLabel: 'Парусный катамаран',
-    capacity: 10, pricePerHour: 16000,
+    capacity: 10, pricePerHour: 12000,
+    badge: 'Хит сезона',
     description: 'Lagoon 440 -14-метровый парусный катамаран, на котором Крым раскрывается с воды так, как вы его ещё не видели. Три каюты, просторный салон с панорамными окнами, SUP-борды, мангал и снасти для рыбалки.',
     longDescription: `**Почему Мануну -это не просто прогулка на яхте:**
 
@@ -148,7 +153,7 @@ Natatores — латинское название плавающих птиц. �
 
 **Стоимость аренды катамарана Мануну:**
 
-• Выход в час -16 000 ₽ (минимум 2 часа)
+• Выход в час -12 000 ₽ (минимум 2 часа)
 
 **Важно:** Капитан и экипаж (2 человека) включены. Топливо включено. Оптимальная загрузка -8 человек. Бесплатная отмена за 24 часа.`,
     photos: [
@@ -169,6 +174,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
+    slug: 'palassa',
     ownerId: 'owner-2',
     name: 'Паласса',
     type: 'motor', typeLabel: 'Моторная яхта',
@@ -225,6 +231,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'gggggggg-gggg-gggg-gggg-gggggggggggg',
+    slug: 'omega',
     ownerId: 'owner-1',
     name: 'Омега',
     type: 'catamaran', typeLabel: 'Парусный катамаран',
@@ -277,6 +284,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'jjjjjjjj-jjjj-jjjj-jjjj-jjjjjjjjjjjj',
+    slug: 'nicole',
     ownerId: 'owner-2',
     name: 'Николь',
     type: 'sailing', typeLabel: 'Парусно-моторная',
@@ -330,6 +338,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'iiiiiiii-iiii-iiii-iiii-iiiiiiiiiiii',
+    slug: 'aurora',
     ownerId: 'owner-1',
     name: 'Аврора',
     type: 'sailing', typeLabel: 'Парусная яхта',
@@ -378,6 +387,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'llllllll-llll-llll-llll-llllllllllll',
+    slug: 'simeiz',
     ownerId: 'owner-2',
     name: 'Симеиз',
     type: 'motor', typeLabel: 'Катер',
@@ -426,6 +436,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'mmmmmmmm-mmmm-mmmm-mmmm-mmmmmmmmmmmm',
+    slug: 'kassandra',
     ownerId: 'owner-2',
     name: 'Кассандра',
     type: 'sailing', typeLabel: 'Парусная яхта',
@@ -474,6 +485,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+    slug: 'argon',
     ownerId: 'owner-2',
     name: 'Аргон',
     type: 'motor', typeLabel: 'Катер',
@@ -525,6 +537,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh',
+    slug: 'training',
     ownerId: 'owner-1',
     name: 'Обучение яхтингу',
     type: 'training', typeLabel: 'Обучение',
@@ -571,6 +584,7 @@ Natatores — латинское название плавающих птиц. �
   },
   {
     id: 'rrrrrrrr-rrrr-rrrr-rrrr-rrrrrrrrrrrr',
+    slug: 'red-star',
     ownerId: 'owner-1',
     name: 'Red Star',
     type: 'sailing', typeLabel: 'Парусная яхта',
@@ -653,6 +667,10 @@ export function getYachtsByOwner(ownerId: string): Yacht[] {
 
 export function getYachtById(id: string): Yacht | undefined {
   return YACHTS.find(y => y.id === id);
+}
+
+export function getYachtBySlug(slugOrId: string): Yacht | undefined {
+  return YACHTS.find(y => y.slug === slugOrId || y.id === slugOrId);
 }
 
 export function getBookings(filters?: { yachtId?: string; date?: string; status?: BookingStatus }): Booking[] {

@@ -8,7 +8,9 @@ import Footer from '@/components/ui/Footer';
 import TiltCard from '@/components/ui/TiltCard';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import ContactHub from '@/components/ui/ContactHub';
+import Link from 'next/link';
 import { getYachts, type YachtType } from '@/lib/data';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 const TYPE_OPTIONS: { value: YachtType | ''; label: string }[] = [
   { value: '', label: 'Все типы' },
@@ -79,6 +81,12 @@ export default function CatalogPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
+            <div className="mb-3">
+              <Breadcrumbs items={[
+                { label: 'Главная', href: '/' },
+                { label: 'Каталог яхт' },
+              ]} />
+            </div>
             <h1 className="text-3xl md:text-4xl font-bold text-[var(--navy)] mb-2">
               Каталог яхт
             </h1>
@@ -174,6 +182,24 @@ export default function CatalogPage() {
         </div>
       </div>
 
+      {/* Routes promo */}
+      <div className="bg-gradient-to-r from-[var(--azure-light)] to-[var(--teal-light,#e0f7f5)] border-b border-black/[0.04]">
+        <div className="max-w-7xl mx-auto px-5 md:px-8 py-3 flex items-center justify-between gap-4 flex-wrap">
+          <p className="text-sm text-[var(--navy)]">
+            Не знаете куда поплыть? Посмотрите популярные маршруты яхтенных прогулок по Крыму.
+          </p>
+          <Link
+            href="/routes"
+            className="shrink-0 text-sm font-semibold text-[var(--azure)] hover:underline flex items-center gap-1"
+          >
+            Маршруты прогулок
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+
       {/* Results */}
       <div className="flex-1 max-w-7xl mx-auto px-5 md:px-8 py-8">
         <AnimatePresence mode="wait">
@@ -219,6 +245,38 @@ export default function CatalogPage() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* SEO text */}
+      <section className="bg-white border-t border-black/[0.04] px-5 md:px-8 py-10">
+        <div className="max-w-4xl mx-auto">
+          <details className="group">
+            <summary className="flex items-center justify-between cursor-pointer list-none select-none">
+              <h2 className="text-base font-semibold text-[var(--navy)]">Аренда яхт в Ялте - каталог флота 2026</h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--muted)] transition-transform duration-300 group-open:rotate-180 shrink-0">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+            <div className="mt-5 prose prose-sm max-w-none text-[var(--muted)] leading-relaxed space-y-4">
+              <p>
+                В каталоге Glissa - 11 яхт для аренды в Ялте: от компактных катеров до просторных катамаранов вместимостью до 12 человек. Все суда технически проверены, застрахованы и оснащены спасательным оборудованием по нормам безопасности.
+              </p>
+              <h3 className="text-sm font-semibold text-[var(--navy)] mt-4 mb-2">Типы яхт для аренды в Ялте</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li><strong>Парусные яхты</strong> - тихий ход, атмосфера настоящего плавания. Идеально для романтики, медитативного отдыха и новичков в яхтинге.</li>
+                <li><strong>Моторные яхты и катера</strong> - быстрое перемещение по маршруту, больше времени на купание и осмотр достопримечательностей.</li>
+                <li><strong>Катамараны</strong> - устойчивая платформа, просторная палуба, вместимость до 10-12 человек. Отлично подходит для семей и корпоративов.</li>
+              </ul>
+              <h3 className="text-sm font-semibold text-[var(--navy)] mt-4 mb-2">Условия аренды яхты в Ялте</h3>
+              <p>
+                Все яхты сдаются с капитаном - это гарантирует вашу безопасность и качество впечатлений. Минимальная продолжительность аренды - 2 часа. Стоимость от 8 000 рублей в час, цена финальная: топливо и оснащение уже включены. Оплата онлайн при бронировании, бесплатная отмена за 24 часа.
+              </p>
+              <p>
+                Не знаете какую яхту выбрать для прогулки по Крыму? Позвоните нам: <a href="tel:+79790840089" className="text-[var(--azure)] hover:underline">+7 (979) 084-00-89</a> - поможем подобрать подходящий вариант под ваш маршрут и состав группы.
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
 
       <Footer />
       <ContactHub />

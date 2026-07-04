@@ -3,13 +3,17 @@
 import { useState, use, useRef, useEffect, useCallback } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import ContactHub from '@/components/ui/ContactHub';
-import { getYachtById, createBooking, COMMISSION_RATE, type Yacht } from '@/lib/data';
+import { getYachtBySlug, getYachts, createBooking, COMMISSION_RATE, type Yacht } from '@/lib/data';
+import YachtPublicCard from '@/components/ui/YachtPublicCard';
 import { createNotification } from '@/lib/notifications';
+import YachtSchemaOrg from '@/components/ui/YachtSchemaOrg';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -17,7 +21,7 @@ interface Props {
 
 export default function YachtDetailPage({ params }: Props) {
   const { id } = use(params);
-  const yacht = getYachtById(id);
+  const yacht = getYachtBySlug(id);
   if (!yacht) notFound();
 
   return (
@@ -31,6 +35,13 @@ export default function YachtDetailPage({ params }: Props) {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-5 md:px-8 py-10">
+        <div className="mb-6">
+          <Breadcrumbs items={[
+            { label: 'Главная', href: '/' },
+            { label: 'Каталог яхт', href: '/catalog' },
+            { label: yacht.name },
+          ]} />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Left: Info */}
           <div className="lg:col-span-2 space-y-10">
@@ -46,8 +57,11 @@ export default function YachtDetailPage({ params }: Props) {
         </div>
       </div>
 
+      <SimilarYachts current={yacht} />
+
       <Footer />
       <ContactHub />
+      <YachtSchemaOrg yacht={yacht} id={id} />
     </div>
   );
 }
@@ -83,12 +97,16 @@ function GallerySection({ yacht }: { yacht: Yacht }) {
         transition={{ duration: 0.6 }}
         className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden bg-[var(--navy)]"
       >
-        <motion.img
-          src={yacht.photos[activePhoto]}
-          alt={yacht.name}
-          className="w-full h-full object-contain"
-          style={{ scale, opacity }}
-        />
+        <motion.div className="absolute inset-0" style={{ scale, opacity }}>
+          <Image
+            fill
+            src={yacht.photos[activePhoto]}
+            alt={`${yacht.typeLabel} ${yacht.name} - аренда в Ялте`}
+            className="object-contain"
+            sizes="100vw"
+            priority
+          />
+        </motion.div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30" />
 
         {/* Back button */}
@@ -138,7 +156,9 @@ function GallerySection({ yacht }: { yacht: Yacht }) {
               {yacht.typeLabel}
             </span>
             <h1 className="text-3xl md:text-5xl font-bold text-white">
-              {yacht.name}
+              {yacht.type === 'training'
+                ? `${yacht.name} в Ялте`
+                : `Аренда яхты ${yacht.name} в Ялте`}
             </h1>
           </div>
         </div>
@@ -152,11 +172,11 @@ function GallerySection({ yacht }: { yacht: Yacht }) {
               <button
                 key={i}
                 onClick={() => setActivePhoto(i)}
-                className={`flex-shrink-0 w-16 h-12 md:w-20 md:h-14 rounded-lg overflow-hidden transition-all ${
+                className={`relative flex-shrink-0 w-16 h-12 md:w-20 md:h-14 rounded-lg overflow-hidden transition-all ${
                   activePhoto === i ? 'ring-2 ring-white opacity-100' : 'opacity-50 hover:opacity-80'
                 }`}
               >
-                <img src={photo} alt="" className="w-full h-full object-cover" />
+                <Image fill src={photo} alt="" className="object-cover" sizes="80px" />
               </button>
             ))}
           </div>
@@ -577,5 +597,59 @@ function BookingWidget({ yacht }: { yacht: Yacht }) {
         </form>
       </div>
     </motion.div>
+  );
+}
+
+function SimilarYachts({ current }: { current: Yacht }) {
+  const all = getYachts().filter(y => y.id !== current.id);
+  const sameType = all.filter(y => y.type === current.type);
+  const similar = sameType.length >= 3
+    ? sameType.slice(0, 3)
+    : [...sameType, ...all.filter(y => y.type !== current.type)].slice(0, 3);
+
+  if (similar.length === 0) return null;
+
+  return (
+    <section className="bg-[var(--surface)] border-t border-black/[0.04]">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 py-14">
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--navy)]">
+              Другие яхты для аренды в Ялте
+            </h2>
+            <p className="text-[var(--muted)] mt-1 text-sm">
+              Похожие варианты из нашего флота
+            </p>
+          </div>
+          <Link
+            href="/catalog"
+            className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-[var(--azure)] hover:underline shrink-0"
+          >
+            Весь каталог
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {similar.map((yacht, i) => (
+            <YachtPublicCard key={yacht.id} yacht={yacht} index={i} />
+          ))}
+        </div>
+
+        <div className="mt-8 text-center sm:hidden">
+          <Link
+            href="/catalog"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--azure)] hover:underline"
+          >
+            Смотреть весь каталог
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }

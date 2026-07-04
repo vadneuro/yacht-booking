@@ -9,6 +9,7 @@ import {
   COMMISSION_RATE,
 } from '@/lib/data';
 import { type Notification } from '@/lib/notifications';
+import Image from 'next/image';
 
 const ADMIN_PIN = '2026';  // TODO: заменить на env + нормальную авторизацию
 
@@ -235,8 +236,8 @@ export default function AdminPage() {
                   return (
                     <div key={y.id} className="bg-white rounded-xl border border-black/8 p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
-                          <img src={y.photos[0]} alt="" className="w-full h-full object-cover" />
+                        <div className="relative w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+                          <Image fill src={y.photos[0]} alt="" className="object-cover" sizes="32px" />
                         </div>
                         <div>
                           <p className="font-semibold text-sm" style={{ color: 'var(--navy)' }}>{y.name}</p>

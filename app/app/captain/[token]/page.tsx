@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   getOwnerByToken, getYachtsByOwner, getBookingsForOwner,
   addBlockedSlot, getBlockedSlots, removeBlockedSlot,
@@ -124,9 +125,14 @@ export default function CaptainPage({ params }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             {/* Yacht info card */}
             <div className="bg-white rounded-xl border border-black/8 overflow-hidden">
-              <div className="aspect-video overflow-hidden">
-                <img src={selectedYacht.photos[0]} alt={selectedYacht.name}
-                  className="w-full h-full object-cover" />
+              <div className="relative aspect-video overflow-hidden">
+                <Image
+                  fill
+                  src={selectedYacht.photos[0]}
+                  alt={selectedYacht.name}
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                />
               </div>
               <div className="p-4 space-y-3">
                 <div>
