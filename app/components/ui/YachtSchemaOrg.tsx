@@ -33,6 +33,17 @@ export default function YachtSchemaOrg({ yacht, id }: Props) {
           },
           availability: 'https://schema.org/InStock',
           seller: { '@type': 'Organization', name: 'Glissa', url: base },
+          shippingDetails: {
+            '@type': 'OfferShippingDetails',
+            doesNotShip: true,
+          },
+          hasMerchantReturnPolicy: {
+            '@type': 'MerchantReturnPolicy',
+            applicableCountry: 'RU',
+            returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            merchantReturnDays: 1,
+            returnFees: 'https://schema.org/FreeReturn',
+          },
         },
         aggregateRating: {
           '@type': 'AggregateRating',
